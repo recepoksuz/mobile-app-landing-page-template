@@ -18,7 +18,9 @@ change that touches structure — it explains *why* things are the way they are,
 > that feature was designed wrong.
 
 When a task pushes you toward hardcoding something per-app, stop and add it to `AppConfig`
-instead. The config is the single source of truth; there is no CMS and there will not be one.
+instead. `docs/config-reference.md` is the full field list — check it before adding one, and
+update it when you do. It also lists what is deliberately *not* configurable, which is where
+most "just add a flag" requests should end. The config is the single source of truth; there is no CMS and there will not be one.
 
 ## Layout
 

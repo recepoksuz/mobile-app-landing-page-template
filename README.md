@@ -13,6 +13,14 @@ Full architectural rationale: [`docs/landing-template-spec.md`](docs/landing-tem
 
 <p align="center"><em>Every word, image and link above comes from one config file.</em></p>
 
+<p align="center">
+  That is the long layout — feature cards, how-it-works, FAQ. It appears because the config
+  has content in those blocks, and a config that leaves them empty renders a one-screen hero
+  instead. Same code, no setting.<br>
+  <a href="docs/config-reference.md"><strong>Config reference</strong></a> ·
+  <a href="apps/aurora/config.ts">the config behind this screenshot</a>
+</p>
+
 ---
 
 ## What the site is for
@@ -85,6 +93,7 @@ Add this repo as a remote and cherry-pick the fixes you want — see
 ## Runbooks
 
 - [Launching a new app](docs/adding-a-tenant.md)
+- [Config reference](docs/config-reference.md) — every field a tenant can set
 - [Deploying](docs/deploy.md)
 - [Pulling template updates into your repo](docs/updating-from-the-template.md)
 - [Moving an app to its own deploy (graduation)](docs/graduation.md)

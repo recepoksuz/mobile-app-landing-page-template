@@ -106,6 +106,14 @@ export const myapp = defineAppConfig({
 `defineAppConfig` validates the config as the module loads. If a field is missing or wrong,
 `next build` fails — a broken config cannot ship silently.
 
+That is the required minimum. **[`docs/config-reference.md`](config-reference.md) is every field
+there is**, including the optional ones this skips: attribution and pixels, extra languages,
+the blog and analytics flags, campaign overrides, short links and social accounts.
+
+**`content` decides how long the page is.** Left empty as above you get a one-screen hero. Fill
+`features`, `steps` and `faq` and you get the long page from the README screenshot — the same
+code, no setting to flip. `apps/aurora/config.ts` is that page's config, filled in.
+
 **Things to watch:**
 
 | Field | Rule |
