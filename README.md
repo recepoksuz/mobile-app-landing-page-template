@@ -73,10 +73,17 @@ No new Vercel project, no deploy command, no environment variable, no code.
 
 Full detail in [docs/adding-a-tenant.md](docs/adding-a-tenant.md).
 
+### Staying current with the template
+
+"Use this template" creates a repo with no shared history, so `git pull` has nothing to merge.
+Add this repo as a remote and cherry-pick the fixes you want — see
+[docs/updating-from-the-template.md](docs/updating-from-the-template.md).
+
 ## Runbooks
 
 - [Launching a new app](docs/adding-a-tenant.md)
 - [Deploying](docs/deploy.md)
+- [Pulling template updates into your repo](docs/updating-from-the-template.md)
 - [Moving an app to its own deploy (graduation)](docs/graduation.md)
 - [AGENTS.md](AGENTS.md) — invariants, gotchas and task recipes for coding agents
 

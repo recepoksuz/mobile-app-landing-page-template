@@ -145,6 +145,9 @@ the config only overrides what a path already says.
 
 **Deploy** — `docs/deploy.md`. One Vercel project serves every tenant; set it up once.
 
+**Pull template updates** — `docs/updating-from-the-template.md`. A repo made with "Use this
+template" has no shared history with it, so `git pull` does not apply; cherry-pick instead.
+
 **Graduate an app** — `docs/graduation.md`. Verify parity by diffing `robots.txt` and the
 sitemap `<loc>` set against the shared deploy; only `lastmod` may differ.
 
