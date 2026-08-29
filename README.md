@@ -1,9 +1,21 @@
-# App Landing Template
+# New app. New domain. No new code.
 
-A **deploy-artifact production line** for mobile app landing pages. This is not a website
-project: the metric being optimised is time-to-launch for a new app.
+A **deploy-artifact production line** for mobile app landing pages. One config file describes
+an app; the page, the legal documents, the deep link files and the ad attribution all follow
+from it. This is not a website project — the metric being optimised is time-to-launch.
 
 **A new app = one config file + one asset folder + one DNS record.**
+
+One deploy serves every app, each on its own domain. Outgrowing it later is a DNS change, not
+a migration.
+
+<p>
+  <a href="https://nextjs.org"><img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-000?style=flat-square&logo=nextdotjs&logoColor=white"></a>
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Lighthouse 100 on desktop" src="https://img.shields.io/badge/Lighthouse-100%20desktop-0CCE6B?style=flat-square&logo=lighthouse&logoColor=white">
+  <img alt="250 tests" src="https://img.shields.io/badge/tests-250-6E56CF?style=flat-square">
+  <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-C92A5F?style=flat-square"></a>
+</p>
 
 Full architectural rationale: [`docs/landing-template-spec.md`](docs/landing-template-spec.md)
 
