@@ -115,6 +115,7 @@ These cost real debugging time. Do not rediscover them.
 | **`public/` is not in a serverless function** | The OG route and the blog read from disk at request time. `outputFileTracingIncludes` in `next.config.ts` puts those directories in the bundle. Add any other runtime-read directory there — the failure on Vercel is silent, not a crash. |
 | **A `*.vercel.app` URL shows the first tenant** | It is nobody's `domain`, so `fallbackSlug` answers. `NEXT_PUBLIC_DEFAULT_TENANT` picks a different one — safe in any environment, because `resolveTenant` applies a fallback only on platform-controlled hosts, never on a custom domain. |
 | **Vitest cannot parse `.tsx` without help** | The repo sets `jsx: "preserve"` for Next. Vite 8 transforms with Oxc, so it is `oxc.jsx`, not `esbuild.jsx`. Already configured; this is why. |
+| **`preload` covers every declared font subset** | Declaring `latin-ext` for Turkish preloads a file an English page never renders. Both faces set `preload: false`; `unicode-range` still fetches only what is used, and `swap` keeps text visible. Preloading all four cost 3 mobile Performance points. |
 | **This shell drops `cat` intermittently** | Heredocs inside shell functions have silently produced empty files. For multi-file writes, use `python3` and assert the bytes landed. |
 
 ## Common tasks

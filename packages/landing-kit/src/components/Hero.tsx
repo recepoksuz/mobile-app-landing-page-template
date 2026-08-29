@@ -66,7 +66,7 @@ export function Hero({
           />
 
           <h1
-            className="display-gradient reveal reveal-2 mt-6 font-bold leading-[1.08] tracking-[-0.025em] text-balance lg:mt-8"
+            className="display-gradient reveal reveal-2 mt-6 leading-[1.08] tracking-[-0.025em] text-balance lg:mt-8"
             style={{ fontSize: "clamp(2.125rem, 1.15rem + 4.1vw, 4rem)" }}
           >
             {tagline}

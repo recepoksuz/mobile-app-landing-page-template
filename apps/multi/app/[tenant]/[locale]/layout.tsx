@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import type { ReactNode } from "react";
 import {
   buildMetadata,
@@ -18,17 +18,42 @@ import { getTenantLocale, type RouteParams } from "@/lib/tenant";
 
 /**
  * SF Pro is not self-hosted: Apple's licence limits that font mainly to app interfaces on
- * Apple platforms (spec §8). Inter is self-hosted through `next/font`, so it makes no
- * third-party request and is unaffected by the consent gate.
+ * Apple platforms (spec §8). Both faces are self-hosted through `next/font`, so they make no
+ * third-party request and are unaffected by the consent gate.
+ *
+ * `latin-ext` is not optional: `ğ`, `ş` and `ı` live there, and without it every Turkish
+ * heading falls back to a system font mid-sentence. `next/font` emits one `@font-face` per
+ * subset with a `unicode-range`, so an English page never downloads it.
  */
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--font-inter",
+  // Not preloaded. `preload` emits a <link rel=preload> for every declared subset, so declaring
+  // `latin-ext` for Turkish would put a file an English page never renders on the critical path.
+  // The browser fetches only the subsets its `unicode-range` actually matches, and `swap` means
+  // text is visible in the fallback until then.
+  preload: false,
+
   // Only the weights the design uses, so the variable font subset stays small.
   weight: ["400", "500", "600", "700"],
   // Trims the metric mismatch between Inter and the fallback, so text does not shift when the
   // webfont lands.
+  adjustFontFallback: true,
+});
+
+/**
+ * Display face for headings. Outfit is geometric where Inter is neo-grotesque, which is what
+ * gives a heading set in it a different voice from the paragraph under it rather than just a
+ * larger size. One weight only — 600 — because that is the single weight the headings use, and
+ * a display face carrying unused weights is bytes on the critical path for nothing.
+ */
+const outfit = Outfit({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-outfit",
+  preload: false,
+  weight: ["600"],
   adjustFontFallback: true,
 });
 
@@ -74,7 +99,7 @@ export default async function LocaleLayout({
       dir={dict.direction}
       data-mode={config.theme.mode}
       style={themeStyle(config)}
-      className={inter.variable}
+      className={`${inter.variable} ${outfit.variable}`}
       suppressHydrationWarning
     >
       <body className="flex min-h-dvh flex-col">

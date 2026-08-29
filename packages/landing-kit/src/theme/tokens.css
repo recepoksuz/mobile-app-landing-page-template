@@ -22,6 +22,11 @@
   --spacing-site: 90rem; /* 1440px */
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /*
+   * Display face for headings. It falls back to the body stack rather than to a serif, so a
+   * page that loses the webfont degrades to Inter headings instead of changing character.
+   */
+  --font-display: var(--font-outfit), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 1.25rem;
   --radius-pill: 999px;
@@ -101,6 +106,22 @@
     font-optical-sizing: auto;
     font-feature-settings: "cv11", "ss01", "calt";
     text-rendering: optimizeLegibility;
+  }
+
+  /*
+   * Headings carry the display face. Set on the elements rather than sprinkled as a class, so a
+   * heading added later gets it without anyone remembering to. Outfit ships here at 600 only —
+   * a heavier weight would be synthesised, which smears a geometric face badly — so the weight
+   * is pinned rather than left to whatever `font-bold` a component asks for.
+   *
+   * `.font-sans` opts an element back out. The footer's small uppercase labels use it: they are
+   * interface labels that happen to be `h2` for outline reasons, not display type.
+   */
+  h1:not(.font-sans),
+  h2:not(.font-sans),
+  h3:not(.font-sans) {
+    font-family: var(--font-display);
+    font-weight: 600;
   }
 
   /* Numbers in the stats strip must not jitter between values of different widths. */

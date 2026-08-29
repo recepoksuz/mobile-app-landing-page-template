@@ -164,7 +164,7 @@ export function Footer({
 
         <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">
           <nav aria-label={dict.footer.legal} className="flex flex-col gap-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">{dict.footer.legal}</h2>
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-muted">{dict.footer.legal}</h2>
             {legalNavLinks(config, locale, basePath).map((link) => (
               <Link
                 key={link.href}
@@ -178,7 +178,7 @@ export function Footer({
 
           {socials.length > 0 ? (
             <nav aria-label={dict.footer.social} className="flex flex-col gap-3">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">{dict.footer.follow}</h2>
+              <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-muted">{dict.footer.follow}</h2>
               <ul className="flex items-center gap-3">
                 {socials.map(([key, href]) => (
                   <li key={key}>
@@ -200,7 +200,7 @@ export function Footer({
           ) : null}
 
           <div className="flex flex-col gap-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">{dict.footer.contact}</h2>
+            <h2 className="font-sans text-xs font-semibold uppercase tracking-wider text-muted">{dict.footer.contact}</h2>
             <a
               href={`mailto:${config.legal.supportEmail}`}
               className="text-sm text-muted transition-colors hover:text-fg"
