@@ -68,9 +68,10 @@ pass, you are breaking the invariant, not fixing the test.
 1. **Public URLs never contain the tenant slug or the default locale.** `aurora.example/privacy`,
    never `/aurora/privacy` or `/en/privacy`. Both of those return 404 / 308 respectively. This
    is what makes graduation a DNS change and language-adding non-breaking.
-2. **An unknown host serves nothing.** 404, empty sitemap, `Disallow: /`. Never let
-   `fallbackSlug` apply in production — a stray domain pointed at the deploy would create
-   duplicate content under a wrong canonical.
+2. **An unknown host serves nothing.** 404, empty sitemap, `Disallow: /`. `fallbackSlug` applies
+   only on platform-controlled hosts (`*.vercel.app`, localhost) — a stray custom domain pointed
+   at the deploy must never resolve, or it creates duplicate content under a wrong canonical.
+   The gate is on the host, not on `NODE_ENV`, so no environment variable can open it.
 3. **No third-party script loads before consent.** `Pixels` returns `null` unless consent is
    `"granted"`. Fonts are self-hosted via `next/font` so they are unaffected.
 4. **Every store link goes through `/go/...`.** Never link straight to `apps.apple.com` or
@@ -112,7 +113,7 @@ These cost real debugging time. Do not rediscover them.
 | **Tailwind needs `@source`** | The kit lives in `node_modules` from the app's point of view, so `app/globals.css` points Tailwind at `packages/landing-kit/src` explicitly. |
 | **`app/.well-known/…` dot-folders do work** | No rewrite fallback is needed. `apple-app-site-association` must be served with an explicit `application/json` Content-Type since it has no extension. |
 | **`public/` is not in a serverless function** | The OG route and the blog read from disk at request time. `outputFileTracingIncludes` in `next.config.ts` puts those directories in the bundle. Add any other runtime-read directory there — the failure on Vercel is silent, not a crash. |
-| **A preview URL matches no tenant** | `*.vercel.app` is nobody's `domain`, so it 404s — correct in production. Set `NEXT_PUBLIC_DEFAULT_TENANT` in the **Preview** environment only, never Production. |
+| **A deployment 404s on its own URL** | `*.vercel.app` is nobody's `domain`. Set `NEXT_PUBLIC_DEFAULT_TENANT` — safe in any environment, because `resolveTenant` applies a fallback only on platform-controlled hosts (`*.vercel.app`, localhost), never on a custom domain. |
 | **Vitest cannot parse `.tsx` without help** | The repo sets `jsx: "preserve"` for Next. Vite 8 transforms with Oxc, so it is `oxc.jsx`, not `esbuild.jsx`. Already configured; this is why. |
 | **This shell drops `cat` intermittently** | Heredocs inside shell functions have silently produced empty files. For multi-file writes, use `python3` and assert the bytes landed. |
 

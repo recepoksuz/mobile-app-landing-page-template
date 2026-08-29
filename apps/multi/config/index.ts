@@ -12,17 +12,12 @@ export const tenants: readonly AppConfig[] = [aurora, atlas];
 export const registry = createTenantRegistry(tenants);
 
 /**
- * Fallback for environments where no canonical host matches — plain `localhost`, or a
- * Vercel preview URL.
+ * Fallback tenant for hosts the platform generates — `localhost` in development, and the
+ * `*.vercel.app` name Vercel gives a deployment. It is what lets you open a deploy before DNS
+ * points at it.
  *
- * It must stay OFF by default in production. Otherwise any domain someone points at this
- * deploy would silently serve the first tenant's content under the wrong host: wrong
- * canonical, wrong sitemap, duplicate content across two domains. An unknown host has to
- * 404.
- *
- * On preview deployments set `NEXT_PUBLIC_DEFAULT_TENANT` to the slug you want the preview
- * URL to render.
+ * There is no environment check here on purpose. `resolveTenant` refuses to apply a fallback on
+ * any host that is not platform-controlled, so a custom domain aimed at this deployment 404s
+ * whatever this value is. Safety belongs in one place, not in every consumer's env config.
  */
-export const fallbackSlug =
-  process.env.NEXT_PUBLIC_DEFAULT_TENANT ??
-  (process.env.NODE_ENV === "production" ? undefined : tenants[0]?.slug);
+export const fallbackSlug = process.env.NEXT_PUBLIC_DEFAULT_TENANT ?? tenants[0]?.slug;

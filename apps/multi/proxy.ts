@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { LOCALE_COOKIE, localeRedirectFor, matchRedirect, normalizeHost, splitLocale } from "@landing/kit";
+import { LOCALE_COOKIE, localeRedirectFor, matchRedirect, normalizeHost, resolveTenant, splitLocale } from "@landing/kit";
 import { fallbackSlug, registry } from "./config";
 
 /**
@@ -14,7 +14,7 @@ export function proxy(request: NextRequest) {
   const host = normalizeHost(request.headers.get("host"));
 
   const tenant =
-    registry.byHost.get(host) ?? (fallbackSlug ? registry.bySlug.get(fallbackSlug) : undefined);
+    resolveTenant(registry, host, fallbackSlug);
 
   if (!tenant) {
     // Unknown host: do not serve any tenant's content.

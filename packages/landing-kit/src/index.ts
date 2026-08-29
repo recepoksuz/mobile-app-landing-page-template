@@ -4,6 +4,7 @@ export type { AppConfig, AppConfigInput } from "./config/schema";
 export { defineAppConfig } from "./config/define";
 export {
   createTenantRegistry,
+  isPlatformHost,
   normalizeHost,
   resolveTenant,
   type TenantRegistry,

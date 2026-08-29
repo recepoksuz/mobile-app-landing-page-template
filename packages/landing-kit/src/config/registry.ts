@@ -46,8 +46,33 @@ export function createTenantRegistry(configs: readonly AppConfig[]): TenantRegis
 }
 
 /**
- * Resolves a tenant from the host. In preview/deploy environments (a Vercel preview URL, plain
- * `localhost`) the canonical host will not match, so `fallbackSlug` takes over.
+ * Hosts the platform itself hands out: local development and the `*.vercel.app` names Vercel
+ * generates for a deployment.
+ *
+ * These are the only hosts a fallback tenant may be served on. The distinction that matters is
+ * who controls the name: nobody can point a `*.vercel.app` host at your deployment — Vercel
+ * assigns it to your project — whereas anyone can aim a custom domain at it. That is exactly
+ * the case the unknown-host 404 exists to stop.
+ */
+export function isPlatformHost(host: string | null | undefined): boolean {
+  const key = normalizeHost(host);
+  return (
+    key === "localhost" ||
+    key.endsWith(".localhost") ||
+    key === "127.0.0.1" ||
+    key.endsWith(".vercel.app")
+  );
+}
+
+/**
+ * Resolves a tenant from the host.
+ *
+ * A canonical host wins outright. Failing that, `fallbackSlug` applies **only on a platform
+ * host** — so a deployment can be viewed on its generated URL before DNS is pointed at it,
+ * while a stray custom domain still resolves to nothing and 404s.
+ *
+ * Gating on the host rather than on `NODE_ENV` is deliberate: it means no environment variable,
+ * however it is set, can make this deployment answer for a domain that is not configured here.
  */
 export function resolveTenant(
   registry: TenantRegistry,
@@ -56,6 +81,6 @@ export function resolveTenant(
 ): AppConfig | undefined {
   const direct = registry.byHost.get(normalizeHost(host));
   if (direct) return direct;
-  if (fallbackSlug) return registry.bySlug.get(fallbackSlug);
+  if (fallbackSlug && isPlatformHost(host)) return registry.bySlug.get(fallbackSlug);
   return undefined;
 }
