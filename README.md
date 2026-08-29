@@ -25,6 +25,9 @@ mandatory surface that does exactly three jobs:
 2. Routing an ad click on the web to the right store or deep link (attribution)
 3. A professional web presence for business verification
 
+Job 2 is the one with the most machinery behind it — see
+[Marketing and attribution](#marketing-and-attribution).
+
 ## Structure
 
 ```
@@ -86,6 +89,52 @@ Add this repo as a remote and cherry-pick the fixes you want — see
 - [Pulling template updates into your repo](docs/updating-from-the-template.md)
 - [Moving an app to its own deploy (graduation)](docs/graduation.md)
 - [AGENTS.md](AGENTS.md) — invariants, gotchas and task recipes for coding agents
+
+## Marketing and attribution
+
+Every store link on the site goes through `/go/...` rather than to the store directly. That one
+rule is what makes the rest of this work.
+
+```
+Meta ad  →  myapp.ai/?utm_source=meta&utm_campaign=summer
+                ↓  visitor reads the page, taps a badge
+         →  /go/hero?store=ios&utm_source=meta&utm_campaign=summer
+                ↓  the route reads the device and builds the destination
+         →  OneLink  pid=meta  c=summer  →  App Store
+```
+
+The campaign survives both clicks. That matters more than it sounds: an ad almost always points
+at the page rather than at `/go/...`, because the point is that people read it before they
+convert — and a badge that dropped the query string it was standing on would record every paid
+install as organic.
+
+**A new link needs no deploy.** `/go/{source}/{campaign}/{creative}` reads its attribution out
+of the path, so a new creator, podcast or flyer is a URL someone types:
+
+```
+/go/alice                    campaign "alice"
+/go/influencer/alice         source "influencer", campaign "alice"
+/go/influencer/alice/reel1   ... and creative "reel1"
+```
+
+`campaigns` in the config only overrides what a path already says — for renaming a campaign, or
+keeping a creative code out of a URL people will see. Short aliases like `/download` are config
+redirects, so what you print on a flyer and what you measure are the same link.
+
+| | Config | Notes |
+|---|---|---|
+| **Install attribution** | `attribution.oneLink` | AppsFlyer. `utm_*` are mapped onto `af_*`; a real ad click's parameters win over the path |
+| **Meta / TikTok / Google Ads pixels** | `attribution.metaPixelId`, `tiktokPixelId`, `googleAdsId` | None load before consent is granted |
+| **Web analytics** | `features.analytics` | Vercel, cookieless and first-party, so it needs no banner |
+| **Consent banner** | — | Appears only when a pixel is configured. A tenant with none never shows one |
+| **Deep links into the app** | `store.ios.teamId` + `bundleId`, `android.sha256Fingerprints` | AASA and assetlinks are generated from these |
+
+Desktop is handled rather than ignored: a store link is a dead click on a laptop, so the route
+sends the visitor to the store's web page — or renders a QR code, with `features.desktopQr`.
+
+**Not built yet:** the pixels report a page view but no conversion event, so an ad platform
+optimises on "landing page view" rather than "went to the store". The right event name depends
+on how your ad account defines conversions, which is why it is not guessed here.
 
 ## Ready when you need it
 
