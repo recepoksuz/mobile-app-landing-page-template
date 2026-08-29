@@ -49,6 +49,7 @@ apps/aurora/              a graduated app: its own deploy, same @landing/kit
 ## Commands
 
 ```sh
+pnpm new-tenant <slug>         # scaffold a tenant: config, registration, placeholder assets
 pnpm validate                  # tenant configs only — seconds. Run after writing a config
 pnpm check                     # validate + typecheck + lint + unit + e2e — before finishing
 pnpm turbo build
@@ -138,17 +139,25 @@ These cost real debugging time. Do not rediscover them.
 
 **Add a tenant** — `docs/adding-a-tenant.md`. Four steps, and there is no fifth:
 
-1. `apps/multi/config/{slug}.ts` + the entry in `config/index.ts`
-2. `apps/multi/public/apps/{slug}/` — icon, logo, mockup
-3. `git push` — Vercel builds on its own; there is no deploy command to run
-4. Add the domain in Vercel, once
+```sh
+pnpm new-tenant myapp --name "My App" --domain myapp.com   # config, registration, placeholders
+# replace every TODO in apps/multi/config/myapp.ts
+pnpm validate                                              # seconds
+git push                                                   # Vercel builds on its own
+```
 
-Then **`pnpm validate`** — seconds, no bundler. Run it before anything slower. Step 1 is two
-files, and forgetting the second is the one mistake in this repo that fails completely
-silently: the config typechecks, the build succeeds, every test passes, and the tenant's
-domain serves a 404. `validate` exists for that, and also catches a slug that does not match
-its filename, a missing asset folder, and any schema violation — each as a sentence saying
-what to do, not a stack trace.
+Then add the domain in Vercel, once. That is the whole list.
+
+Scaffold rather than write from scratch: it does the three structural steps, none of which
+involve a decision, and registration is one of them. Registration lives in a second file and
+omitting it fails completely silently — the config typechecks, the build succeeds, every test
+passes, and the tenant's domain serves a 404.
+
+`pnpm validate` is the loop. Seconds, no bundler, and it catches every failure in this repo
+that is invisible until someone loads the live site: an unregistered config, a slug that does
+not match its filename, an asset the config names and the folder lacks, a locale with no UI
+dictionary, a blog switched on with no posts directory, and any schema violation. Each is a
+sentence saying what to do. Run it after writing a config and before anything slower.
 
 Read `apps/multi/config/atlas.ts` for the minimum shape and `docs/config-reference.md` for
 every field. Copy `atlas.ts` rather than writing from memory; a config omits far more than it

@@ -84,13 +84,15 @@ pnpm --filter multi test:e2e   # Playwright — verifies the acceptance criteria
 
 ## Adding an app
 
+```sh
+pnpm new-tenant myapp --name "My App" --domain myapp.com
+# fill in the TODOs, drop in the real assets
+pnpm validate     # seconds — catches everything that would otherwise 404 quietly
+git push          # Vercel builds on its own
 ```
-1.  apps/multi/config/{slug}.ts     write the config, add it to config/index.ts
-2.  apps/multi/public/apps/{slug}/  drop in icon, logo, mockup
-3.  pnpm validate                   seconds — checks 1 and 2 actually line up
-4.  git push                        Vercel builds on its own
-5.  Vercel -> Domains               add myapp.com and www.myapp.com, once
-```
+
+Then add `myapp.com` in Vercel, once. No new project, no deploy command, no environment
+variable, no code.
 
 No new Vercel project, no deploy command, no environment variable, no code.
 `NEXT_PUBLIC_DEFAULT_TENANT` is not per app — it only decides who the `*.vercel.app` URL shows.

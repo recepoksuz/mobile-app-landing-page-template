@@ -19,7 +19,8 @@
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
     "check": "pnpm validate && turbo run typecheck lint test test:e2e",
-    "validate": "tsx --tsconfig scripts/tsconfig.json scripts/validate-tenants.mts"
+    "validate": "tsx --tsconfig scripts/tsconfig.json scripts/validate-tenants.mts",
+    "new-tenant": "tsx --tsconfig scripts/tsconfig.json scripts/new-tenant.mts"
   },
   "devDependencies": {
     "tsx": "^4.23.12",

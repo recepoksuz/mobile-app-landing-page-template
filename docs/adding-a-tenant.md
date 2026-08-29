@@ -8,12 +8,19 @@ asset folder, one DNS record. You touch nothing else.
 
 ## The whole loop
 
+```sh
+pnpm new-tenant myapp --name "My App" --domain myapp.com
 ```
-1.  apps/multi/config/{slug}.ts     write the config, add it to config/index.ts
-2.  apps/multi/public/apps/{slug}/  drop in icon, logo, mockup
-3.  pnpm validate                   seconds — checks 1 and 2 actually line up
-4.  git push                        Vercel builds on its own
-5.  Vercel -> Domains               add myapp.com and www.myapp.com, once
+
+That writes `apps/multi/config/myapp.ts`, registers it in `config/index.ts`, and creates
+`apps/multi/public/apps/myapp/` with placeholders. Then:
+
+```
+1.  Replace every TODO in the config      the only part that needs to know about the app
+2.  Drop the real assets over the placeholders
+3.  pnpm validate                          seconds — checks it all lines up
+4.  git push                               Vercel builds on its own
+5.  Vercel -> Domains                      add myapp.com and www.myapp.com, once
 ```
 
 Step 3 is worth its two seconds. Step 1 is really two files, and forgetting the registry entry
