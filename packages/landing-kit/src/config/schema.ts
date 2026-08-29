@@ -176,7 +176,9 @@ export const appConfigSchema = z
       // drift from the ones above. `prefault` supplies the input and lets the schema fill it in.
       .prefault({}),
 
-    content: contentSchema,
+    // `prefault({})` so a hero-only tenant can leave it out entirely rather than writing three
+    // empty arrays to say "no extra sections". The inner defaults fill it in.
+    content: contentSchema.prefault({}),
 
     /**
      * Localisation. The default locale's copy is the top-level `tagline`, `description` and

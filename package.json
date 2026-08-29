@@ -18,9 +18,11 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
-    "check": "turbo run typecheck lint test test:e2e"
+    "check": "pnpm validate && turbo run typecheck lint test test:e2e",
+    "validate": "tsx --tsconfig scripts/tsconfig.json scripts/validate-tenants.mts"
   },
   "devDependencies": {
+    "tsx": "^4.23.12",
     "turbo": "2.10.12",
     "typescript": "5.9.3"
   }

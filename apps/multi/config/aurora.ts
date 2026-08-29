@@ -1,4 +1,4 @@
-import { defineAppConfig } from "@landing/kit";
+import { defineAppConfig } from "@landing/kit/config";
 
 /**
  * PLACEHOLDER DATA. What has to be changed before going live:

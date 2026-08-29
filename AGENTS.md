@@ -49,7 +49,8 @@ apps/aurora/              a graduated app: its own deploy, same @landing/kit
 ## Commands
 
 ```sh
-pnpm check                     # typecheck + lint + unit tests — run this before finishing
+pnpm validate                  # tenant configs only — seconds. Run after writing a config
+pnpm check                     # validate + typecheck + lint + unit + e2e — before finishing
 pnpm turbo build
 pnpm --filter multi dev        # http://aurora.localhost:3100 · http://atlas.localhost:3100
 pnpm --filter multi test:e2e   # Playwright; builds and starts its own server
@@ -130,6 +131,7 @@ These cost real debugging time. Do not rediscover them.
 | **`preload` covers every declared font subset** | Declaring `latin-ext` for Turkish preloads a file an English page never renders. Both faces set `preload: false`; `unicode-range` still fetches only what is used, and `swap` keeps text visible. Preloading all four cost 3 mobile Performance points. |
 | **`pnpm exec` does not see a package's binaries** | `@playwright/test` lives in apps/multi, and pnpm links workspace binaries per package, not into the root `.bin`. Use `pnpm --filter multi exec playwright ...`. A bare `pnpm exec` fails on CI and, worse, can silently run a different Playwright from a parent directory locally. |
 | **`/_vercel/insights` 404s locally** | The analytics endpoint only exists on Vercel, so a local run logs a console error worth four Best Practices points. Atlas carries the analytics demo and Aurora — the Lighthouse target — does not, deliberately. |
+| **A config file must import `@landing/kit/config`** | Not the main barrel. The barrel pulls the component library, which is why `next.config.ts` cannot use it and why validating a config used to need a bundler. `./config` is schema, `defineAppConfig` and the registry, nothing else. |
 | **This shell drops `cat` intermittently** | Heredocs inside shell functions have silently produced empty files. For multi-file writes, use `python3` and assert the bytes landed. |
 
 ## Common tasks
@@ -140,6 +142,17 @@ These cost real debugging time. Do not rediscover them.
 2. `apps/multi/public/apps/{slug}/` — icon, logo, mockup
 3. `git push` — Vercel builds on its own; there is no deploy command to run
 4. Add the domain in Vercel, once
+
+Then **`pnpm validate`** — seconds, no bundler. Run it before anything slower. Step 1 is two
+files, and forgetting the second is the one mistake in this repo that fails completely
+silently: the config typechecks, the build succeeds, every test passes, and the tenant's
+domain serves a 404. `validate` exists for that, and also catches a slug that does not match
+its filename, a missing asset folder, and any schema violation — each as a sentence saying
+what to do, not a stack trace.
+
+Read `apps/multi/config/atlas.ts` for the minimum shape and `docs/config-reference.md` for
+every field. Copy `atlas.ts` rather than writing from memory; a config omits far more than it
+sets, because most fields have defaults.
 
 No new project, no build settings, no environment variable. `NEXT_PUBLIC_DEFAULT_TENANT` is
 **not** per tenant — it only decides who the `*.vercel.app` URL shows, and adding an app never

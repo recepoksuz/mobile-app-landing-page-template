@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // The repo compiles JSX with `preserve` because Next does the transform. These scripts run
+    // straight on Node, and a tenant config pulls in the whole `@landing/kit` barrel — React
+    // components included — so the JSX in those modules has to compile to something Node can
+    // evaluate. The components are never rendered here; they only have to load.
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "include": ["*.mts"]
+}

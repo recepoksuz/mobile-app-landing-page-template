@@ -11,11 +11,18 @@ asset folder, one DNS record. You touch nothing else.
 ```
 1.  apps/multi/config/{slug}.ts     write the config, add it to config/index.ts
 2.  apps/multi/public/apps/{slug}/  drop in icon, logo, mockup
-3.  git push                        Vercel builds on its own
-4.  Vercel -> Domains               add myapp.com and www.myapp.com, once
+3.  pnpm validate                   seconds — checks 1 and 2 actually line up
+4.  git push                        Vercel builds on its own
+5.  Vercel -> Domains               add myapp.com and www.myapp.com, once
 ```
 
-That is the entire list. **There is no fifth step.**
+Step 3 is worth its two seconds. Step 1 is really two files, and forgetting the registry entry
+is the only mistake here that fails silently — the config typechecks, the build succeeds, the
+tests pass, and the domain serves a 404. `validate` also catches a slug that does not match its
+filename, a missing asset, and any schema violation, each as a sentence rather than a stack
+trace.
+
+That is the entire list. **There is no sixth step.**
 
 - **No new Vercel project.** One project serves every tenant. You do not pick a root
   directory, a framework or a build command again.

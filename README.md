@@ -87,8 +87,9 @@ pnpm --filter multi test:e2e   # Playwright — verifies the acceptance criteria
 ```
 1.  apps/multi/config/{slug}.ts     write the config, add it to config/index.ts
 2.  apps/multi/public/apps/{slug}/  drop in icon, logo, mockup
-3.  git push                        Vercel builds on its own
-4.  Vercel -> Domains               add myapp.com and www.myapp.com, once
+3.  pnpm validate                   seconds — checks 1 and 2 actually line up
+4.  git push                        Vercel builds on its own
+5.  Vercel -> Domains               add myapp.com and www.myapp.com, once
 ```
 
 No new Vercel project, no deploy command, no environment variable, no code.

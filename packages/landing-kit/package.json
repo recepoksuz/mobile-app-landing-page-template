@@ -9,6 +9,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./config": "./src/config/index.ts",
     "./server": "./src/server.ts",
     "./tokens.css": "./src/theme/tokens.css",
     "./blog": "./src/blog/posts.ts"

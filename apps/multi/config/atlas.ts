@@ -1,4 +1,4 @@
-import { defineAppConfig } from "@landing/kit";
+import { defineAppConfig } from "@landing/kit/config";
 
 /**
  * PLACEHOLDER DATA — see the note at the top of aurora.ts.

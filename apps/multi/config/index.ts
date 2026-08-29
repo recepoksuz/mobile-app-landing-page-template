@@ -1,4 +1,4 @@
-import { createTenantRegistry, type AppConfig } from "@landing/kit";
+import { createTenantRegistry, type AppConfig } from "@landing/kit/config";
 import { atlas } from "./atlas";
 import { aurora } from "./aurora";
 

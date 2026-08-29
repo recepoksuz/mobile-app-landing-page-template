@@ -23,6 +23,7 @@ not**, so the same code produces a one-screen page and a long one:
 
 ```ts
 // Hero only — header, hero, ratings strip, minimal footer. One screen, no scroll.
+// `content` can be left out entirely; this is what omitting it means.
 content: { features: [], steps: [], faq: [] }
 
 // The long page in the screenshot — adds feature cards, how-it-works, FAQ,
