@@ -10,7 +10,7 @@ import { ClosingCta } from "./ClosingCta";
 import { Faq } from "./Faq";
 import { Features } from "./Features";
 import { Hero } from "./Hero";
-import { SocialProof } from "./SocialProof";
+import { hasSocialProof, SocialProof } from "./SocialProof";
 import { Steps } from "./Steps";
 
 /**
@@ -47,6 +47,7 @@ export async function LandingPage({
       <JsonLd data={landingJsonLd(config, locale, stats)} />
       <Hero
         compact={compact}
+        proofBelow={hasSocialProof(stats)}
         config={config}
         locale={locale}
         basePath={basePath}

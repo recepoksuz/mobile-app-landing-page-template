@@ -18,7 +18,7 @@ export function Faq({
   if (faq.length === 0) return null;
 
   return (
-    <section aria-labelledby="faq-heading" className="site-container py-14 md:py-20 lg:py-24">
+    <section aria-labelledby="faq-heading" className="site-container section-y">
       <h2
         id="faq-heading"
         className="display-gradient mx-auto max-w-3xl text-center font-semibold tracking-tight text-balance"
@@ -27,7 +27,7 @@ export function Faq({
         {dict.sections.faq}
       </h2>
 
-      <div className="mx-auto mt-10 max-w-3xl divide-y divide-border border-y border-border">
+      <div className="section-lead mx-auto max-w-3xl divide-y divide-border border-y border-border">
         {faq.map((item) => (
           <details key={item.q} className="faq-item group [&[open]_.chevron]:rotate-45">
             <summary className="flex cursor-pointer select-none list-none items-center justify-between gap-6 py-5 text-left text-base font-medium [&::-webkit-details-marker]:hidden">

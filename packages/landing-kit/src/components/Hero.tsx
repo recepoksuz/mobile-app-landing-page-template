@@ -17,9 +17,15 @@ import { StoreBadges } from "./StoreBadges";
  *
  * Geometry at the top end matches the reference (spec §8), measured rather than eyeballed:
  * 106px icon, 64px/1.1 heading on a 600px measure, 22px lead.
+ *
+ * The section fills the viewport below the header. `min-h` rather than `h`, so a long
+ * tagline or a landscape phone grows the section instead of clipping it; `svh` rather than
+ * `vh`, because `vh` measures the viewport with the mobile URL bar retracted and overflows
+ * by that bar's height on first paint.
  */
 export function Hero({
   compact = false,
+  proofBelow = false,
   config,
   locale,
   basePath = "",
@@ -29,6 +35,8 @@ export function Hero({
 }: {
   /** True when nothing follows the hero, so it should sit in the screen rather than scroll. */
   compact?: boolean;
+  /** Whether the stats strip renders below, whose height a hero-only page must leave room for. */
+  proofBelow?: boolean;
   config: AppConfig;
   locale: Locale;
   basePath?: string;
@@ -39,8 +47,10 @@ export function Hero({
 }) {
   return (
     <section
-      className={`site-container relative ${
-        compact ? "pt-8 pb-10 lg:pt-10 lg:pb-12" : "pt-8 pb-14 lg:pt-12 lg:pb-20"
+      className={`site-container relative flex flex-col justify-center py-12 lg:py-16 ${
+        compact && proofBelow
+          ? "min-h-[calc(100svh-var(--header-h)-var(--proof-h))]"
+          : "min-h-[calc(100svh-var(--header-h))]"
       }`}
     >
       <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,460px)] xl:gap-16">

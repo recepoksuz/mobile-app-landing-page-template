@@ -45,7 +45,7 @@ export function Header({
         className="absolute inset-0 -z-10 bg-bg/80 backdrop-blur-xl supports-[backdrop-filter]:bg-bg/60"
       />
 
-      <div className="site-container relative flex h-16 items-center gap-6 md:h-20 md:gap-8">
+      <div className="site-container relative flex h-[var(--header-h)] items-center gap-6 md:gap-8">
         <Link
           href={home}
           aria-label={`${config.name} ${dict.nav.home}`}

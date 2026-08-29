@@ -26,6 +26,15 @@ function Stars({ rating }: { rating: number }) {
 }
 
 /**
+ * Whether the strip has anything to show. Exported because the hero sizes itself around it on a
+ * hero-only page, and the two must not disagree — a hero reserving room for a strip that does
+ * not render leaves a band of dead space under the fold.
+ */
+export function hasSocialProof(stats: StoreStats): boolean {
+  return (stats.rating !== undefined && stats.reviewCount !== undefined) || Boolean(stats.downloads);
+}
+
+/**
  * Social proof sits directly below the hero (spec §7). If the config has no data, the
  * block is not rendered at all — an empty "0 reviews" line hurts conversion.
  */
@@ -45,7 +54,7 @@ export function SocialProof({
   const { rating, reviewCount, downloads } = stats;
   const hasRating = rating !== undefined && reviewCount !== undefined;
 
-  if (!hasRating && !downloads) return null;
+  if (!hasSocialProof(stats)) return null;
 
   // Compact notation is locale-aware: "12K" in English, "12 B" in Turkish.
   const numberFormat = new Intl.NumberFormat(locale, { notation: "compact" });

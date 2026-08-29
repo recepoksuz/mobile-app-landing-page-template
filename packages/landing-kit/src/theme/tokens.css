@@ -30,6 +30,28 @@
 :root {
   color-scheme: dark;
   --content-padding: 1.5rem;
+
+  /*
+   * Vertical rhythm between sections.
+   *
+   * Fluid rather than stepped, for the same reason the display type is: a section that jumps
+   * from 80px to 128px at exactly 768 is loose at 770 and tight at 760. This runs 80px on a
+   * phone to 160px past 1900, and it is the single knob for how much the page breathes —
+   * sections do not carry their own padding values.
+   */
+  --section-space: clamp(5rem, 2.5rem + 6.5vw, 10rem);
+
+  /* Height of the sticky header, so a full-height hero can subtract it honestly. */
+  --header-h: 4rem;
+  /* The stats strip below the hero, subtracted on a hero-only page so the two fit one screen. */
+  --proof-h: 7.5rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 5rem;
+    --proof-h: 6rem;
+  }
 }
 
 /*
@@ -100,6 +122,22 @@
 }
 
 @layer components {
+  /*
+   * The vertical counterpart to `.site-container`. Every section between the hero and the
+   * footer uses this and nothing else, so the page's rhythm is one value in one file.
+   */
+  .section-y {
+    padding-block: var(--section-space);
+  }
+
+  /*
+   * Space between a section's heading and its body. Tied to the section rhythm at roughly a
+   * third, so tightening or loosening the page keeps its internal proportions.
+   */
+  .section-lead {
+    margin-top: calc(var(--section-space) * 0.36);
+  }
+
   /* A single horizontal measure across the page: max width + stepped padding. */
   .site-container {
     width: 100%;

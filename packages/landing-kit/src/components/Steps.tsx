@@ -15,7 +15,7 @@ export function Steps({
 
   return (
     <section aria-labelledby="steps-heading" className="border-y border-border bg-surface">
-      <div className="site-container py-14 md:py-20 lg:py-24">
+      <div className="site-container section-y">
         <h2
           id="steps-heading"
           className="display-gradient max-w-2xl font-semibold tracking-tight text-balance"
@@ -28,7 +28,7 @@ export function Steps({
           The connector is drawn on the marker row rather than between the columns, so it lines up
           with the numbers at every width and disappears cleanly when the grid stacks.
         */}
-        <ol className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
+        <ol className="section-lead grid gap-10 sm:grid-cols-3 sm:gap-8">
           {steps.map((step, index) => (
             <li key={step.title} className="flex flex-col gap-3">
               <span className="relative flex items-center">

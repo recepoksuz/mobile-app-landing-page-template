@@ -27,7 +27,7 @@ export function ClosingCta({
 
   return (
     <section aria-labelledby="closing-cta" className="border-t border-border bg-surface">
-      <div className="site-container flex flex-col items-center gap-6 py-16 text-center md:py-24">
+      <div className="site-container section-y flex flex-col items-center gap-6 text-center">
         <h2
           id="closing-cta"
           className="display-gradient max-w-2xl font-semibold tracking-tight text-balance"

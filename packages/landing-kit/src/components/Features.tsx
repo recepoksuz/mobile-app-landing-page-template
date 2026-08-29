@@ -17,7 +17,7 @@ export function Features({
   if (features.length === 0) return null;
 
   return (
-    <section aria-labelledby="features-heading" className="site-container py-14 md:py-20 lg:py-24">
+    <section aria-labelledby="features-heading" className="site-container section-y">
       <h2
         id="features-heading"
         className="display-gradient max-w-2xl font-semibold tracking-tight text-balance"
@@ -26,7 +26,7 @@ export function Features({
         {dict.sections.features}
       </h2>
 
-      <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="section-lead grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <li
             key={feature.title}
