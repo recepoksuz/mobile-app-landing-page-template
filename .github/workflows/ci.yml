@@ -20,7 +20,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm exec playwright install --with-deps chromium
+      # `--filter multi`, not a bare `pnpm exec`: `@playwright/test` is a dependency of
+      # apps/multi, and pnpm does not link a workspace package's binaries into the root
+      # `node_modules/.bin`. From the root the command is simply not there, and CI fails with
+      # "Command \"playwright\" not found". It can appear to work locally by picking up an
+      # unrelated Playwright from a parent directory — at whatever version that happens to be.
+      - run: pnpm --filter multi exec playwright install --with-deps chromium
 
       # `check` is typecheck + lint + unit + e2e. The e2e suite is the only place the spec's
       # acceptance criteria are actually measured — tenant isolation, well-known Content-Type,
