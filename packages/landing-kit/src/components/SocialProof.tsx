@@ -25,12 +25,8 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-/**
- * Whether the strip has anything to show. Exported because the hero sizes itself around it on a
- * hero-only page, and the two must not disagree — a hero reserving room for a strip that does
- * not render leaves a band of dead space under the fold.
- */
-export function hasSocialProof(stats: StoreStats): boolean {
+/** Whether the strip has anything to show at all. */
+function hasSocialProof(stats: StoreStats): boolean {
   return (stats.rating !== undefined && stats.reviewCount !== undefined) || Boolean(stats.downloads);
 }
 

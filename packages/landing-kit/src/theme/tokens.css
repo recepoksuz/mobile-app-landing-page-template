@@ -48,14 +48,11 @@
 
   /* Height of the sticky header, so a full-height hero can subtract it honestly. */
   --header-h: 4rem;
-  /* The stats strip below the hero, subtracted on a hero-only page so the two fit one screen. */
-  --proof-h: 7.5rem;
 }
 
 @media (min-width: 768px) {
   :root {
     --header-h: 5rem;
-    --proof-h: 6rem;
   }
 }
 

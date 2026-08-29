@@ -181,7 +181,9 @@ pnpm check && pnpm turbo build && pnpm --filter multi test:e2e
 ```
 
 For anything touching markup, metadata or tokens, also run Lighthouse — the targets are
-Performance and SEO ≥95 and **Accessibility 100**:
+Performance and SEO ≥95 and **Accessibility 100**. Current: desktop 100/100/100/100,
+mobile 95/100/100/100. Mobile LCP is the consent banner, which is client-rendered by
+design; an SSR version was tried and lost more in Best Practices than it gained:
 
 ```sh
 npx lighthouse http://aurora.localhost:3100/ --preset=desktop \

@@ -127,3 +127,41 @@ test.describe("closing CTA", () => {
   });
 });
 
+
+test.describe("a hero-only page is one screen", () => {
+  // Both shared-deploy tenants are hero-only, and the whole point of that layout is that the
+  // visitor sees everything at once — footer included — without scrolling.
+  //
+  // This exists because it regressed. Giving the hero its own viewport height made the page
+  // exactly one footer taller than the screen: the layout is already a `min-h-dvh` flex column
+  // of header, `flex-1` main and footer, so any height set inside main is added on top of the
+  // two, not shared with them. The rule is that the layout owns the height and the hero does
+  // not, and the only way to keep that true is to measure it.
+  const viewports = [
+    { name: "phone", width: 390, height: 844 },
+    { name: "tablet", width: 768, height: 1024 },
+    { name: "laptop", width: 1440, height: 900 },
+  ];
+
+  for (const { name, width, height } of viewports) {
+    test(`fits the viewport on a ${name}`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await page.goto(AURORA);
+
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollHeight - window.innerHeight,
+      );
+
+      // A pixel of slack: sub-pixel layout rounding is not a scrollbar.
+      expect(overflow, `page overflows by ${overflow}px`).toBeLessThanOrEqual(1);
+    });
+  }
+
+  test("still shows the footer", async ({ page }) => {
+    // A page that fits by dropping content is not the fix being asked for.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(AURORA);
+
+    await expect(page.locator("footer")).toBeInViewport();
+  });
+});
