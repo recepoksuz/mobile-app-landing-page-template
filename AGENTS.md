@@ -111,6 +111,9 @@ These cost real debugging time. Do not rediscover them.
 | **`backdrop-filter` breaks `position: fixed` children** | It establishes a containing block, so the full-screen mobile menu pinned itself to the header bar. The header's blur lives on a sibling layer for this reason — do not move it back onto the header element. |
 | **Tailwind needs `@source`** | The kit lives in `node_modules` from the app's point of view, so `app/globals.css` points Tailwind at `packages/landing-kit/src` explicitly. |
 | **`app/.well-known/…` dot-folders do work** | No rewrite fallback is needed. `apple-app-site-association` must be served with an explicit `application/json` Content-Type since it has no extension. |
+| **`public/` is not in a serverless function** | The OG route and the blog read from disk at request time. `outputFileTracingIncludes` in `next.config.ts` puts those directories in the bundle. Add any other runtime-read directory there — the failure on Vercel is silent, not a crash. |
+| **A preview URL matches no tenant** | `*.vercel.app` is nobody's `domain`, so it 404s — correct in production. Set `NEXT_PUBLIC_DEFAULT_TENANT` in the **Preview** environment only, never Production. |
+| **Vitest cannot parse `.tsx` without help** | The repo sets `jsx: "preserve"` for Next. Vite 8 transforms with Oxc, so it is `oxc.jsx`, not `esbuild.jsx`. Already configured; this is why. |
 | **This shell drops `cat` intermittently** | Heredocs inside shell functions have silently produced empty files. For multi-file writes, use `python3` and assert the bytes landed. |
 
 ## Common tasks
@@ -128,6 +131,8 @@ keys and the same `{placeholders}` as English.
 **Add a promo link** — nothing to do. `/go/{source}/{campaign}/{creative}` reads its attribution
 out of the path, so a new creator or channel needs no config entry and no deploy. `campaigns` in
 the config only overrides what a path already says.
+
+**Deploy** — `docs/deploy.md`. One Vercel project serves every tenant; set it up once.
 
 **Graduate an app** — `docs/graduation.md`. Verify parity by diffing `robots.txt` and the
 sitemap `<loc>` set against the shared deploy; only `lastmod` may differ.
