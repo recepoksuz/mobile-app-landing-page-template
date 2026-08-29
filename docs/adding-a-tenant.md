@@ -3,8 +3,36 @@
 Target: **under an hour, writing zero code.** You touch three things — one config file, one
 asset folder, one DNS record. You touch nothing else.
 
-If changing a tenant's behaviour requires editing a file other than
-`apps/multi/config/*.ts`, that feature was designed wrong — fix the design, not the code.
+
+---
+
+## The whole loop
+
+```
+1.  apps/multi/config/{slug}.ts     write the config, add it to config/index.ts
+2.  apps/multi/public/apps/{slug}/  drop in icon, logo, mockup
+3.  git push                        Vercel builds on its own
+4.  Vercel -> Domains               add myapp.com and www.myapp.com, once
+```
+
+That is the entire list. **There is no fifth step.**
+
+- **No new Vercel project.** One project serves every tenant. You do not pick a root
+  directory, a framework or a build command again.
+- **No deploy button.** The push is the deploy. You never run `vercel --prod`.
+- **No environment variable.** `NEXT_PUBLIC_DEFAULT_TENANT` is *not* per app — it does one
+  thing, which is decide who the `*.vercel.app` URL shows when no domain matches. Adding an
+  app never touches it.
+- **No code.** If a tenant needs a file outside `apps/multi/config/*.ts` and its asset folder,
+  that feature was designed wrong — fix the design, not the tenant.
+
+The one thing that is manual, once per domain: adding it in Vercel. The host must match the
+config's `domain` exactly, or the deployment 404s — deliberately, so a stray domain pointed at
+this deployment cannot serve someone's content.
+
+---
+
+The rest of this page is the detail behind steps 1 and 2.
 
 ---
 

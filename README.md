@@ -59,6 +59,20 @@ pnpm --filter multi build
 pnpm --filter multi test:e2e   # Playwright — verifies the acceptance criteria
 ```
 
+## Adding an app
+
+```
+1.  apps/multi/config/{slug}.ts     write the config, add it to config/index.ts
+2.  apps/multi/public/apps/{slug}/  drop in icon, logo, mockup
+3.  git push                        Vercel builds on its own
+4.  Vercel -> Domains               add myapp.com and www.myapp.com, once
+```
+
+No new Vercel project, no deploy command, no environment variable, no code.
+`NEXT_PUBLIC_DEFAULT_TENANT` is not per app — it only decides who the `*.vercel.app` URL shows.
+
+Full detail in [docs/adding-a-tenant.md](docs/adding-a-tenant.md).
+
 ## Runbooks
 
 - [Launching a new app](docs/adding-a-tenant.md)

@@ -121,8 +121,16 @@ These cost real debugging time. Do not rediscover them.
 
 ## Common tasks
 
-**Add a tenant** — `docs/adding-a-tenant.md`. Config file, asset folder, registry entry, DNS.
-Nothing else. New tenants in the shared deploy are **hero-only**: leave `content.features`,
+**Add a tenant** — `docs/adding-a-tenant.md`. Four steps, and there is no fifth:
+
+1. `apps/multi/config/{slug}.ts` + the entry in `config/index.ts`
+2. `apps/multi/public/apps/{slug}/` — icon, logo, mockup
+3. `git push` — Vercel builds on its own; there is no deploy command to run
+4. Add the domain in Vercel, once
+
+No new project, no build settings, no environment variable. `NEXT_PUBLIC_DEFAULT_TENANT` is
+**not** per tenant — it only decides who the `*.vercel.app` URL shows, and adding an app never
+touches it. If a task pushes you to edit anything else, say so rather than doing it quietly. New tenants in the shared deploy are **hero-only**: leave `content.features`,
 `steps` and `faq` empty. A block earns its place by having something to put in it, and content
 growing past a few pages is the signal to graduate (spec §10), which is where the richer layout
 lives — see `apps/aurora`.
