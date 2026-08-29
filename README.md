@@ -62,6 +62,7 @@ pnpm --filter multi test:e2e   # Playwright — verifies the acceptance criteria
 ## Runbooks
 
 - [Launching a new app](docs/adding-a-tenant.md)
+- [Deploying](docs/deploy.md)
 - [Moving an app to its own deploy (graduation)](docs/graduation.md)
 - [AGENTS.md](AGENTS.md) — invariants, gotchas and task recipes for coding agents
 
