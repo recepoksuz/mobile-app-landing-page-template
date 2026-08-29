@@ -102,4 +102,5 @@ export type { Dictionary, Locale } from "./i18n/types";
 export { ConsentProvider, useConsent, CONSENT_STORAGE_KEY } from "./tracking/ConsentProvider";
 export { ConsentBanner } from "./tracking/ConsentBanner";
 export { Analytics } from "./tracking/Analytics";
+export { reportStoreClick } from "./tracking/conversion";
 export { Pixels, hasTrackingPixels } from "./tracking/Pixels";

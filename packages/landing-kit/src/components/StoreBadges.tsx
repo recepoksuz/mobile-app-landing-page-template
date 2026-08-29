@@ -24,11 +24,15 @@ function PlayGlyph() {
 
 function Badge({
   href,
+  attribution,
+  store,
   top,
   main,
   children,
 }: {
   href: string;
+  attribution: AppConfig["attribution"];
+  store: "ios" | "android";
   top: string;
   main: string;
   children: React.ReactNode;
@@ -36,6 +40,8 @@ function Badge({
   return (
     <AttributionLink
       href={href}
+      attribution={attribution}
+      store={store}
       prefetch={false}
       className="group inline-flex h-[58px] items-center gap-2.5 rounded-xl border border-white/20 bg-white/[0.04] pl-3.5 pr-4 text-fg transition-[transform,background-color,border-color] duration-200 hover:border-white/40 hover:bg-white/[0.09] active:scale-[0.98] sm:h-[62px] sm:gap-3 sm:pl-4 sm:pr-5 xl:h-[68px] xl:gap-3.5 xl:pl-5 xl:pr-6"
     >
@@ -81,13 +87,25 @@ export function StoreBadges({
   return (
     <div className={`flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:justify-start ${className}`}>
       {config.store.ios ? (
-        <Badge href={`${base}?store=ios`} top={dict.cta.iosTop} main={dict.cta.ios}>
+        <Badge
+          href={`${base}?store=ios`}
+          attribution={config.attribution}
+          store="ios"
+          top={dict.cta.iosTop}
+          main={dict.cta.ios}
+        >
           <AppleGlyph />
         </Badge>
       ) : null}
 
       {config.store.android ? (
-        <Badge href={`${base}?store=android`} top={dict.cta.androidTop} main={dict.cta.android}>
+        <Badge
+          href={`${base}?store=android`}
+          attribution={config.attribution}
+          store="android"
+          top={dict.cta.androidTop}
+          main={dict.cta.android}
+        >
           <PlayGlyph />
         </Badge>
       ) : null}

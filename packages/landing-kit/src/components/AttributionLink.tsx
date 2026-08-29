@@ -4,6 +4,10 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 
+import type { AppConfig } from "../config/schema";
+import { useConsent } from "../tracking/ConsentProvider";
+import { reportStoreClick } from "../tracking/conversion";
+
 /**
  * Parameters worth carrying from the landing page into `/go/...`.
  *
@@ -31,20 +35,30 @@ function Forwarding({
   href,
   className,
   children,
+  conversion,
   ...rest
-}: {
-  href: string;
-  className?: string;
-  children: ReactNode;
-} & Record<string, unknown>) {
+}: LinkProps) {
   const current = useSearchParams();
 
   return (
-    <Link href={withForwardedParams(href, current)} className={className} {...rest}>
+    <Link
+      href={withForwardedParams(href, current)}
+      className={className}
+      onClick={conversion}
+      {...rest}
+    >
       {children}
     </Link>
   );
 }
+
+type LinkProps = {
+  href: string;
+  className?: string;
+  children: ReactNode;
+  /** Fired on click. Undefined when there is nothing to report or no consent to report it. */
+  conversion?: () => void;
+} & Record<string, unknown>;
 
 /**
  * A link into `/go/...` that carries the campaign parameters the visitor arrived with.
@@ -65,21 +79,36 @@ export function AttributionLink({
   href,
   className,
   children,
+  attribution,
+  store,
   ...rest
 }: {
   href: string;
   className?: string;
   children: ReactNode;
+  /** Given only by a link that is a conversion; omitted, the click reports nothing. */
+  attribution?: AppConfig["attribution"];
+  store?: "ios" | "android";
 } & Record<string, unknown>) {
+  const { consent } = useConsent();
+
+  // Built here rather than inside `Forwarding` so the pre-hydration fallback link reports too.
+  // The guard is the same one `Pixels` uses: without granted consent no pixel script has
+  // loaded, so there would be nothing to report to even if this tried.
+  const conversion =
+    attribution && store && consent === "granted"
+      ? () => reportStoreClick(attribution, store)
+      : undefined;
+
   return (
     <Suspense
       fallback={
-        <Link href={href} className={className} {...rest}>
+        <Link href={href} className={className} onClick={conversion} {...rest}>
           {children}
         </Link>
       }
     >
-      <Forwarding href={href} className={className} {...rest}>
+      <Forwarding href={href} className={className} conversion={conversion} {...rest}>
         {children}
       </Forwarding>
     </Suspense>

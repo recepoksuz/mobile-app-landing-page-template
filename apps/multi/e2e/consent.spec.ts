@@ -109,3 +109,64 @@ test.describe("analytics", () => {
     expect(await page.locator('script[src*="/_vercel/insights"]').count()).toBe(0);
   });
 });
+
+test.describe("conversion events", () => {
+  // The click that matters is the one leaving for the store. It has to be reported to the ad
+  // platforms — otherwise a campaign optimises on "opened the page" — without ever becoming a
+  // way around the consent gate.
+  //
+  // Calls are recorded through an exposed binding rather than a variable on `window`, because
+  // the click navigates away: anything kept in the page would be torn down with it, and the
+  // assertion would pass because the evidence vanished rather than because nothing happened.
+
+  async function recordPixelCalls(page: import("@playwright/test").Page) {
+    const calls: unknown[][] = [];
+    await page.exposeFunction("__record", (args: unknown[]) => {
+      calls.push(args);
+    });
+    await page.addInitScript(() => {
+      (window as unknown as { fbq: unknown }).fbq = (...args: unknown[]) =>
+        (window as unknown as { __record: (a: unknown[]) => void }).__record(args);
+    });
+    return calls;
+  }
+
+  test("nothing is reported when consent has not been granted", async ({ page }) => {
+    const calls = await recordPixelCalls(page);
+
+    await page.goto(AURORA);
+    await page.getByRole("link", { name: /app store/i }).first().click({ noWaitAfter: true });
+    await page.waitForURL(/\/go\//);
+
+    expect(calls).toHaveLength(0);
+  });
+
+  test("the store click is reported once consent is granted", async ({ page }) => {
+    const calls = await recordPixelCalls(page);
+
+    await page.goto(AURORA);
+    await page.getByRole("button", { name: /accept/i }).click();
+
+    await page.getByRole("link", { name: /app store/i }).first().click({ noWaitAfter: true });
+    await page.waitForURL(/\/go\//);
+
+    // Picked out of the calls rather than assumed to be the only one: once consent is granted
+    // the real pixel script runs too, and its `init` and `PageView` come through the same stub.
+    const conversions = calls.filter(([verb, event]) => verb === "track" && event !== "PageView");
+
+    // The configured event, and which store was chosen — the two things an ad platform needs to
+    // tell a conversion from a bounce.
+    expect(conversions).toHaveLength(1);
+    expect(conversions[0]?.[1]).toBe("Lead");
+    expect(conversions[0]?.[2]).toMatchObject({ content_name: "ios", content_type: "app" });
+  });
+
+  test("the store click still navigates when no pixel is configured", async ({ page }) => {
+    // Reporting is an add-on. It must never be able to swallow the click itself.
+    await page.goto(ATLAS);
+    await page.getByRole("link", { name: /app store/i }).first().click({ noWaitAfter: true });
+
+    await page.waitForURL(/\/go\//);
+    expect(page.url()).toContain("/go/");
+  });
+});

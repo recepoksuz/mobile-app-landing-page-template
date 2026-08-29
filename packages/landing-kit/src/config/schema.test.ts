@@ -115,3 +115,26 @@ describe("defineAppConfig", () => {
     ).toThrow(/at least one field/);
   });
 });
+
+describe("conversion events", () => {
+  it("fills in the platform defaults when attribution is omitted entirely", () => {
+    // `prefault` rather than `default` on the attribution block is what makes this work. With
+    // `default` the omitted block would take the literal `{}` and every nested default would
+    // have to be repeated at the outer level, where they would quietly drift apart.
+    const config = defineAppConfig(structuredClone(validConfigInput));
+
+    expect(config.attribution.conversionEvent.meta).toBe("Lead");
+    expect(config.attribution.conversionEvent.tiktok).toBe("Download");
+    expect(config.attribution.conversionEvent.googleAdsLabel).toBeUndefined();
+  });
+
+  it("keeps the defaults for platforms an override does not name", () => {
+    const config = defineAppConfig({
+      ...structuredClone(validConfigInput),
+      attribution: { metaPixelId: "1", conversionEvent: { meta: "CompleteRegistration" } },
+    });
+
+    expect(config.attribution.conversionEvent.meta).toBe("CompleteRegistration");
+    expect(config.attribution.conversionEvent.tiktok).toBe("Download");
+  });
+});

@@ -132,9 +132,24 @@ redirects, so what you print on a flyer and what you measure are the same link.
 Desktop is handled rather than ignored: a store link is a dead click on a laptop, so the route
 sends the visitor to the store's web page — or renders a QR code, with `features.desktopQr`.
 
-**Not built yet:** the pixels report a page view but no conversion event, so an ad platform
-optimises on "landing page view" rather than "went to the store". The right event name depends
-on how your ad account defines conversions, which is why it is not guessed here.
+**Conversion events.** A click through to a store is reported to whichever pixels are
+configured, so a campaign optimises on "went to install" rather than "opened the page" — the
+platform can otherwise not tell a bounce from a conversion, and spends the budget as if they
+were the same. Defaults are each platform's closest standard event, overridable per tenant:
+
+```ts
+attribution: {
+  metaPixelId: "...",
+  conversionEvent: {
+    meta: "Lead",            // default
+    tiktok: "Download",      // default
+    googleAdsLabel: "AbC…",  // Google Ads needs the label, not just the account id
+  },
+},
+```
+
+Reported only after consent is granted — before that no pixel script has loaded and the click
+is silent, which the e2e suite asserts in both directions.
 
 ## Ready when you need it
 

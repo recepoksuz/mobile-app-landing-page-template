@@ -75,6 +75,10 @@ pass, you are breaking the invariant, not fixing the test.
 3. **No third-party script loads before consent.** `Pixels` returns `null` unless consent is
    `"granted"`. Fonts are self-hosted via `next/font` so they are unaffected.
 
+   That includes the conversion event on a store click: `AttributionLink` reports it only when
+   consent is `"granted"`, and `e2e/consent.spec.ts` asserts both that it fires and that it
+   stays silent otherwise.
+
    Vercel Web Analytics (`features.analytics`) is the one exemption, and only because there is
    nothing to gate: the script and its beacon come from `/_vercel/insights` on the site's own
    domain, set no cookie and store no identifier. `e2e/consent.spec.ts` asserts both properties,

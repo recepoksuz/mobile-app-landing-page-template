@@ -143,8 +143,38 @@ export const appConfigSchema = z
         metaPixelId: z.string().optional(),
         tiktokPixelId: z.string().optional(),
         googleAdsId: z.string().optional(),
+
+        /**
+         * The event reported to the ad platforms when a visitor clicks through to a store.
+         *
+         * Without one the pixels report a page view and nothing else, so a campaign is
+         * optimised on "someone opened the page" rather than "someone went to install" — the
+         * platform cannot tell a bounce from a conversion, and it spends the budget as if they
+         * were the same.
+         *
+         * Names, not booleans, because the right one depends on how the ad account defines its
+         * conversion. The defaults are each platform's closest standard event; change them
+         * rather than inventing a custom one unless the ad account already expects a custom.
+         */
+        conversionEvent: z
+          .object({
+            /** Meta standard event. `Lead` is the usual choice for a store click. */
+            meta: z.string().default("Lead"),
+            /** TikTok standard event. `Download` is the one that matches an app install. */
+            tiktok: z.string().default("Download"),
+            /**
+             * Google Ads needs a conversion *label*, not just the account id: the full
+             * `send_to` is `AW-XXXXXXX/LabelHere`. Without the label the account has no
+             * conversion action to attribute to, so nothing is reported at all.
+             */
+            googleAdsLabel: z.string().optional(),
+          })
+          .prefault({}),
       })
-      .default({}),
+      // `prefault`, not `default`: `default` supplies the *output* value, so an omitted
+      // `attribution` block would have to spell out every nested default here and they would
+      // drift from the ones above. `prefault` supplies the input and lets the schema fill it in.
+      .prefault({}),
 
     content: contentSchema,
 
