@@ -144,6 +144,29 @@ Do not add these, and do not leave a door open for them:
 - No self-hosting a font whose licence does not clearly allow it — SF Pro is not copied.
 - No `WebSite`+`SearchAction` JSON-LD; there is no site search and claiming one is spam.
 
+## Commit messages
+
+Conventional Commits, with the body wrapped at 72 columns:
+
+```
+fix(test): run both e2e suites from one Playwright config
+
+Both apps shipped their own Playwright config and both bound port 3100
+for the shared deploy. Turbo runs packages in parallel, so the configs
+raced for the port.
+```
+
+- `type(scope): subject` — imperative, lower case after the colon, no full
+  stop, 72 characters at most. Types: `feat`, `fix`, `docs`, `refactor`,
+  `test`, `build`, `perf`, `chore`.
+- Blank line, then a body wrapped at 72 columns explaining **why**. The diff
+  already says what changed; the message is where the reason lives, and it is
+  the only place a reader six months from now can find it.
+- **Never** add `Co-Authored-By: Claude`, `Generated with Claude Code`, or any
+  other AI attribution trailer. The work is published under the author's own
+  name.
+- Write in English, whatever language the conversation was in.
+
 ## Before you finish
 
 ```sh
