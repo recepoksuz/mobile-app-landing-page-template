@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      # `check` is typecheck + lint + unit + e2e. The e2e suite is the only place the spec's
+      # acceptance criteria are actually measured — tenant isolation, well-known Content-Type,
+      # the consent gate, attribution and graduation parity — so a green build without it
+      # would not mean much.
+      - run: pnpm check
+        env:
+          CI: "true"

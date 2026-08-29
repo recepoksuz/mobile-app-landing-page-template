@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 140 940 980" width="940" height="980" role="img" aria-label="Rebrand app screenshot">
+  <defs>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6b6b73"/><stop offset="18%" stop-color="#2a2a30"/>
+      <stop offset="52%" stop-color="#4a4a52"/><stop offset="80%" stop-color="#232329"/>
+      <stop offset="100%" stop-color="#5c5c65"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.30"/>
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.14"/>
+    </linearGradient>
+    <linearGradient id="art" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="55%" stop-color="#3b82f6" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#15151a"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="38%" stop-color="#ffffff" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="cast" x="-40%" y="-20%" width="180%" height="160%">
+      <feDropShadow dx="0" dy="34" stdDeviation="40" flood-color="#000" flood-opacity="0.65"/>
+    </filter>
+    <clipPath id="scrBack"><rect x="638" y="322" width="286" height="620" rx="34"/></clipPath>
+    <clipPath id="scrFront"><rect x="132" y="212" width="386" height="836" rx="44"/></clipPath>
+  </defs>
+
+  <!-- ARKA TELEFON -->
+  <g transform="translate(-500 40) rotate(-9 781 632)" filter="url(#cast)">
+    <rect x="618" y="302" width="326" height="660" rx="56" fill="url(#frame)"/>
+    <rect x="626" y="310" width="310" height="644" rx="49" fill="#0a0a0c"/>
+    <rect x="638" y="322" width="286" height="620" rx="34" fill="#111116"/>
+    <g clip-path="url(#scrBack)">
+      <rect x="638" y="322" width="286" height="360" fill="url(#art)" opacity="0.5"/>
+      <circle cx="781" cy="500" r="78" fill="#ffffff" opacity="0.10"/>
+      <rect x="662" y="712" width="180" height="14" rx="7" fill="#ffffff" opacity="0.55"/>
+      <rect x="662" y="740" width="238" height="11" rx="5.5" fill="#8a8a90" opacity="0.55"/>
+      <rect x="662" y="764" width="200" height="11" rx="5.5" fill="#8a8a90" opacity="0.35"/>
+      <rect x="662" y="812" width="238" height="44" rx="22" fill="#3b82f6" opacity="0.55"/>
+    </g>
+    <rect x="742" y="334" width="78" height="15" rx="7.5" fill="#000"/>
+    <rect x="618" y="302" width="326" height="660" rx="56" fill="none" stroke="url(#rim)" stroke-width="2.5"/>
+  </g>
+
+  <!-- ÖN TELEFON -->
+  <g transform="translate(390 0) rotate(7 325 630)" filter="url(#cast)">
+    <rect x="110" y="190" width="430" height="880" rx="74" fill="url(#frame)"/>
+    <rect x="120" y="200" width="410" height="860" rx="66" fill="#08080a"/>
+    <rect x="132" y="212" width="386" height="836" rx="44" fill="#0e0e12"/>
+    <g clip-path="url(#scrFront)">
+      <rect x="132" y="212" width="386" height="520" fill="url(#art)"/>
+      <circle cx="325" cy="468" r="104" fill="#ffffff" opacity="0.14"/>
+      <circle cx="325" cy="468" r="62" fill="#ffffff" opacity="0.10"/>
+      <rect x="160" y="600" width="120" height="120" rx="20" fill="#ffffff" opacity="0.12"/>
+      <rect x="292" y="600" width="120" height="120" rx="20" fill="#ffffff" opacity="0.08"/>
+      <rect x="424" y="600" width="120" height="120" rx="20" fill="#ffffff" opacity="0.05"/>
+      <rect x="160" y="772" width="196" height="17" rx="8.5" fill="#ffffff" opacity="0.9"/>
+      <rect x="160" y="806" width="300" height="13" rx="6.5" fill="#8a8a90"/>
+      <rect x="160" y="832" width="248" height="13" rx="6.5" fill="#8a8a90" opacity="0.6"/>
+      <rect x="160" y="886" width="330" height="58" rx="29" fill="#3b82f6"/>
+      <rect x="160" y="972" width="156" height="46" rx="16" fill="#ffffff" opacity="0.07"/>
+      <rect x="334" y="972" width="156" height="46" rx="16" fill="#ffffff" opacity="0.07"/>
+      <rect x="132" y="212" width="386" height="836" fill="url(#sheen)"/>
+    </g>
+    <rect x="272" y="228" width="106" height="30" rx="15" fill="#000"/>
+    <circle cx="358" cy="243" r="6" fill="#0d1520"/>
+    <rect x="110" y="190" width="430" height="880" rx="74" fill="none" stroke="url(#rim)" stroke-width="3"/>
+    <rect x="106" y="330" width="5" height="52" rx="2.5" fill="#5c5c65"/>
+    <rect x="106" y="404" width="5" height="86" rx="2.5" fill="#5c5c65"/>
+    <rect x="539" y="386" width="5" height="118" rx="2.5" fill="#5c5c65"/>
+  </g>
+</svg>

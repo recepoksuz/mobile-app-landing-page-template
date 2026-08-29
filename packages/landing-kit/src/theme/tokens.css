@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens (spec §8).
+ * The one accent color comes from the tenant; everything else is a neutral gray scale.
+ * Tenants differ from one another only in accent, icon and mockup.
+ */
+@theme {
+  --color-bg: var(--tenant-bg, #000000);
+  --color-fg: var(--tenant-fg, #ffffff);
+  /*
+   * The reference site uses #636366, but that is only 3.5:1 on black — the WCAG AA
+   * threshold is 4.5:1. The "Accessibility 100" acceptance criterion beats that shade;
+   * #8a8a90 keeps the same cool neutral character at 6.1:1.
+   */
+  --color-muted: var(--tenant-muted, #8a8a90);
+  --color-surface: var(--tenant-surface, #0c0c0e);
+  --color-border: var(--tenant-border, #1c1c1f);
+  --color-accent: var(--tenant-accent, #f63a80);
+  --color-accent-fg: var(--tenant-accent-fg, #ffffff);
+
+  --spacing-site: 90rem; /* 1440px */
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+}
+
+:root {
+  color-scheme: dark;
+  --content-padding: 1.5rem;
+}
+
+/*
+ * Content padding grows in steps across the breakpoints (spec §8).
+ * 1.5 → 2.19 → 3.44 → 4.69 → 5.31 → 6.25 → 7.5rem
+ */
+@media (min-width: 640px)  { :root { --content-padding: 2.19rem; } }
+@media (min-width: 768px)  { :root { --content-padding: 3.44rem; } }
+@media (min-width: 1024px) { :root { --content-padding: 4.69rem; } }
+@media (min-width: 1280px) { :root { --content-padding: 5.31rem; } }
+@media (min-width: 1536px) { :root { --content-padding: 6.25rem; } }
+@media (min-width: 1920px) { :root { --content-padding: 7.5rem; } }
+
+/* Dark-first; light only kicks in when the config says `mode: "light"`. */
+:root[data-mode="light"] {
+  color-scheme: light;
+  --tenant-bg: #ffffff;
+  --tenant-fg: #09090b;
+  --tenant-muted: #66666e;
+  --tenant-surface: #f4f4f5;
+  --tenant-border: #e4e4e7;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    /*
+     * `clip` rather than `hidden`: it stops a stray decorative element from widening the page
+     * without turning the root into a scroll container, which would break `position: sticky`
+     * on the header. A backstop, not a substitute for fixing the cause.
+     */
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /*
+     * Inter ships a variable optical size axis; letting the browser drive it keeps small text
+     * from looking spindly and large display text from looking loose. `cv11` gives the
+     * single-storey `a`/`g` that pair better with the geometric mockups, and contextual
+     * alternates fix the spacing around the tighter tracking used on headings.
+     */
+    font-optical-sizing: auto;
+    font-feature-settings: "cv11", "ss01", "calt";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Numbers in the stats strip must not jitter between values of different widths. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* An always-visible focus ring for keyboard users (targeting a11y 100). */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+}
+
+@layer components {
+  /* A single horizontal measure across the page: max width + stepped padding. */
+  .site-container {
+    width: 100%;
+    max-width: var(--spacing-site);
+    margin-inline: auto;
+    padding-inline: var(--content-padding);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* In-body links on legal pages — underlined neutral instead of accent, so they
+     do not break the flow of the text. */
+  .legal-prose a {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-muted);
+  }
+
+  .legal-prose a:hover {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .legal-prose strong {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+}
+
+@layer components {
+  /*
+   * Entrance animation.
+   *
+   * The hero is above the fold, so this runs on load rather than on an intersection observer —
+   * no JavaScript, no main-thread listener, and nothing to hydrate before it plays. Only
+   * `opacity` and `transform` are animated, which the compositor handles without layout.
+   *
+   * The reduced-motion rule further up collapses these to a single frame, so the content still
+   * ends up in exactly the same place for anyone who asked for less movement.
+   */
+  @keyframes landing-rise {
+    from {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /*
+   * Slow enough to read as a deliberate entrance rather than a flicker. The easing is heavily
+   * front-loaded, so most of the distance is covered early and the last few pixels settle —
+   * that is what keeps a long duration from feeling sluggish.
+   */
+  .reveal {
+    animation: landing-rise 1.15s cubic-bezier(0.16, 0.84, 0.28, 1) both;
+  }
+
+  .reveal-1 { animation-delay: 0.08s; }
+  .reveal-2 { animation-delay: 0.24s; }
+  .reveal-3 { animation-delay: 0.4s; }
+  .reveal-4 { animation-delay: 0.56s; }
+  .reveal-5 { animation-delay: 0.72s; }
+}
+
+@layer components {
+  /*
+   * Animated accordion.
+   *
+   * The markup stays a native `<details>`, so open/close semantics, keyboard handling and
+   * screen-reader announcement come from the browser and the answers are present for a crawler
+   * even while collapsed. The animation is layered on with `::details-content`, which is what
+   * lets a closed panel have a height to animate from; `interpolate-size` allows the transition
+   * to run to `auto`.
+   *
+   * Browsers without `::details-content` simply snap open, which is the behaviour before this
+   * rule existed — the accordion still works, it just does not glide.
+   */
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      block-size 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+      content-visibility 0.45s allow-discrete,
+      opacity 0.35s ease;
+  }
+
+  .faq-item[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+
+@layer components {
+  /*
+   * The mobile menu panel fades and settles in rather than snapping. `<details>` toggles
+   * `display`, so an animation on the panel restarts every time it is shown — no state to
+   * track and nothing to clean up on close.
+   */
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .menu-panel {
+    animation: menu-in 0.28s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  .menu-panel > * {
+    animation: landing-rise 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  .menu-panel > *:nth-child(1) { animation-delay: 0.06s; }
+  .menu-panel > *:nth-child(2) { animation-delay: 0.11s; }
+  .menu-panel > *:nth-child(3) { animation-delay: 0.16s; }
+  .menu-panel > *:nth-child(4) { animation-delay: 0.21s; }
+  .menu-panel > *:nth-child(5) { animation-delay: 0.26s; }
+}
+
+
+@layer components {
+  /*
+   * A vertical falloff on the headline.
+   *
+   * Deliberately one colour, not two: the page already carries exactly one accent, and a
+   * two-tone heading would compete with it. This is white easing towards a dimmer white — a
+   * hint of depth, kept shallow on purpose because the gradient spans the element, so a
+   * three-line headline would otherwise fade noticeably further than a two-line one.
+   *
+   * `color` is still set to a solid value underneath. `background-clip: text` only takes effect
+   * where it is supported, so a browser without it renders solid white rather than nothing —
+   * and contrast tooling still has a real colour to measure.
+   */
+  .display-gradient {
+    color: var(--color-fg);
+  }
+
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .display-gradient {
+      background-image: linear-gradient(
+        180deg,
+        var(--color-fg) 35%,
+        color-mix(in srgb, var(--color-fg) 82%, transparent) 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      /* Keeps the descenders from being clipped by the background box. */
+      padding-bottom: 0.08em;
+    }
+  }
+}

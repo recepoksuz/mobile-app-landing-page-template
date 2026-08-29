@@ -1,0 +1,4 @@
+@import "@landing/kit/tokens.css";
+
+/* Tailwind does not auto-scan the package under node_modules; declare the source explicitly. */
+@source "../../../packages/landing-kit/src";

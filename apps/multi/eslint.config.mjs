@@ -1,0 +1,10 @@
+import next from "eslint-config-next";
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+
+const config = [
+  ...next,
+  ...coreWebVitals,
+  { ignores: [".next/**", "node_modules/**", "e2e/**", "playwright-report/**", "test-results/**"] },
+];
+
+export default config;
