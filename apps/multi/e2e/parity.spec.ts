@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { GRADUATED, SHARED } from "../playwright.config";
+import { AURORA as SHARED, GRADUATED } from "../playwright.config";
 
 /**
  * Graduation parity.

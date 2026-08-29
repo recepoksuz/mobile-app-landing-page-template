@@ -135,7 +135,7 @@ makes the URLs match byte for byte across graduation.
 ### Verifying parity
 
 ```sh
-pnpm --filter aurora test:e2e
+pnpm --filter multi test:e2e
 ```
 
 That starts both deploys and asserts the guarantees above. It replaces the manual `curl` diff

@@ -9,7 +9,7 @@
     "start": "next start --port 3100",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "next build && playwright test"
+    "test:e2e": "next build && pnpm --filter aurora build && playwright test"
   },
   "dependencies": {
     "@landing/kit": "workspace:*",

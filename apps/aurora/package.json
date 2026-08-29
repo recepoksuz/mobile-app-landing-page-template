@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "next start --port 3101",
     "lint": "eslint .",
-    "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "next build && playwright test"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@landing/kit": "workspace:*",
@@ -18,7 +17,6 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@playwright/test": "1.62.1",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.20.1",
     "@types/react": "19.2.2",
