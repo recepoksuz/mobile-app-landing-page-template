@@ -24,25 +24,23 @@ consumed as source, so there is nothing to build first.
 One setting matters: **Include source files outside of the Root Directory** must stay on. The app
 imports `@landing/kit` from `packages/`, and without it the install has nothing to link.
 
-### 2. Give the deployment URL a tenant
+### 2. Which tenant the deployment URL shows
 
-A tenant is resolved from the request host, and a `*.vercel.app` URL is nobody's `domain` — so
-a fresh deploy returns 404 on its own URL. That is the unknown-host rule doing its job, not a
-broken build.
+A tenant is resolved from the request host, and a `*.vercel.app` URL is nobody's `domain`. On
+its own URL the deployment therefore falls back to the **first tenant in the registry**, so
+there is nothing to configure — open the URL and it renders.
 
-`NEXT_PUBLIC_DEFAULT_TENANT` names the tenant to serve when no domain matches:
+To show a different one, set `NEXT_PUBLIC_DEFAULT_TENANT` to its slug:
 
 ```sh
-vercel env add NEXT_PUBLIC_DEFAULT_TENANT   # e.g. "aurora"
+vercel env add NEXT_PUBLIC_DEFAULT_TENANT   # e.g. "atlas"
 ```
 
-It is safe in every environment, Production included. The fallback only ever applies on a host
-the platform itself hands out — `*.vercel.app` and local development — because nobody but Vercel
-can point one of those at your project. A custom domain aimed at this deployment still resolves
-to nothing and 404s, which is what stops a stray domain from serving a tenant's page under a
+Safe in every environment, Production included. The fallback only ever applies on a host the
+platform itself hands out — `*.vercel.app` and local development — because nobody but Vercel can
+point one of those at your project. A custom domain aimed at this deployment still resolves to
+nothing and 404s, which is what stops a stray domain from serving a tenant's page under a
 canonical it does not own.
-
-Without it the deploy is still correct; you just cannot look at it until a domain is attached.
 
 ### 3. Deploy
 
@@ -86,8 +84,9 @@ cannot follow a path whose file name is only known at runtime. If you add anothe
 is read at request time, add it there too. The symptom is quiet: the OG image falls back to its
 letter placeholder and nothing errors.
 
-**A deployment 404s on its own `*.vercel.app` URL** until `NEXT_PUBLIC_DEFAULT_TENANT` is set.
-See step 2 — this is host resolution working as intended.
+**A custom domain 404s until it is in a tenant config.** Adding the domain in Vercel is only
+half of it: the host has to match a tenant's `domain`, or the deployment correctly refuses to
+serve anything. The `*.vercel.app` URL is not affected — see step 2.
 
 **A tenant's `domain` must be the bare host.** No protocol, no trailing slash. The schema rejects
 anything else at build time, so a bad value fails the deploy rather than shipping a broken
@@ -96,6 +95,8 @@ canonical.
 ---
 
 ## Verifying a deploy
+
+Against the deployment URL first, then again against the real domain once DNS resolves:
 
 ```sh
 BASE=https://myapp.ai

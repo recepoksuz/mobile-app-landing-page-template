@@ -113,7 +113,7 @@ These cost real debugging time. Do not rediscover them.
 | **Tailwind needs `@source`** | The kit lives in `node_modules` from the app's point of view, so `app/globals.css` points Tailwind at `packages/landing-kit/src` explicitly. |
 | **`app/.well-known/…` dot-folders do work** | No rewrite fallback is needed. `apple-app-site-association` must be served with an explicit `application/json` Content-Type since it has no extension. |
 | **`public/` is not in a serverless function** | The OG route and the blog read from disk at request time. `outputFileTracingIncludes` in `next.config.ts` puts those directories in the bundle. Add any other runtime-read directory there — the failure on Vercel is silent, not a crash. |
-| **A deployment 404s on its own URL** | `*.vercel.app` is nobody's `domain`. Set `NEXT_PUBLIC_DEFAULT_TENANT` — safe in any environment, because `resolveTenant` applies a fallback only on platform-controlled hosts (`*.vercel.app`, localhost), never on a custom domain. |
+| **A `*.vercel.app` URL shows the first tenant** | It is nobody's `domain`, so `fallbackSlug` answers. `NEXT_PUBLIC_DEFAULT_TENANT` picks a different one — safe in any environment, because `resolveTenant` applies a fallback only on platform-controlled hosts, never on a custom domain. |
 | **Vitest cannot parse `.tsx` without help** | The repo sets `jsx: "preserve"` for Next. Vite 8 transforms with Oxc, so it is `oxc.jsx`, not `esbuild.jsx`. Already configured; this is why. |
 | **This shell drops `cat` intermittently** | Heredocs inside shell functions have silently produced empty files. For multi-file writes, use `python3` and assert the bytes landed. |
 
