@@ -72,5 +72,9 @@ export const atlas = defineAppConfig({
     instagram: "https://instagram.com/example",
   },
 
-  features: { blog: false, desktopQr: false },
+  // Atlas carries the analytics demonstration. Aurora is the tenant Lighthouse is run
+  // against, and `/_vercel/insights/script.js` only exists on Vercel — locally it 404s, which
+  // is a console error and four Best Practices points for a script that is fine in production.
+  // Keeping the two apart means the score still means something.
+  features: { blog: false, desktopQr: false, analytics: true },
 });

@@ -58,6 +58,18 @@ with no config entry — and no chance of a mistyped number distorting the hero.
 GIF and SVG are all measured; anything unreadable falls back to a phone ratio rather than
 failing the render.
 
+## Optional: analytics
+
+`features.analytics: true` turns on Vercel Web Analytics for that tenant — page views,
+referrers, and which `/go/...` links get clicked. Off by default.
+
+It needs no consent banner and adds no cookie: Vercel serves the script and its beacon from
+`/_vercel/insights` on your own domain. It also needs the feature enabled in the Vercel project
+(Analytics tab), and it does nothing on a deploy that is not on Vercel.
+
+Locally the endpoint does not exist, so you will see a 404 for it in the console. That is
+expected and only happens off Vercel.
+
 ## 2. Write the config file
 
 `apps/multi/config/{slug}.ts`:

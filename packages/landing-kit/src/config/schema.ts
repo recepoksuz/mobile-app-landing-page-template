@@ -249,8 +249,23 @@ export const appConfigSchema = z
          * whereas an interstitial asks them to do something before anything happens.
          */
         desktopQr: z.boolean().default(false),
+
+        /**
+         * Vercel Web Analytics — page views, referrers and which `/go/...` links get clicked.
+         *
+         * Off by default: it is a request per visit that a tenant should opt into rather than
+         * inherit, and a deploy outside Vercel has nothing to receive it.
+         *
+         * Deliberately *not* behind the consent gate, and it is the only third-party-shaped
+         * thing here that is not. Vercel serves the script and its beacon from
+         * `/_vercel/insights` on the site's own domain, sets no cookie and stores no identifier
+         * — so there is no third-party request to gate and nothing a banner would be asking
+         * permission for. Anything that does set a cookie or leave the domain still goes
+         * through `Pixels`.
+         */
+        analytics: z.boolean().default(false),
       })
-      .default({ blog: false, desktopQr: false }),
+      .default({ blog: false, desktopQr: false, analytics: false }),
 
     redirects: z
       .array(z.object({ from: z.string().startsWith("/"), to: z.string(), permanent: z.boolean() }))

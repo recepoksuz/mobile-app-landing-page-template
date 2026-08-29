@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import type { ReactNode } from "react";
 import {
   buildMetadata,
+  Analytics,
   ConsentBanner,
   ConsentProvider,
   Footer,
@@ -122,6 +123,7 @@ export default async function LocaleLayout({
           />
           <ConsentBanner attribution={config.attribution} locale={locale} basePath={basePath} />
           <Pixels attribution={config.attribution} />
+          <Analytics features={config.features} />
         </ConsentProvider>
       </body>
     </html>

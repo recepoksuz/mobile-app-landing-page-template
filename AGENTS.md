@@ -74,6 +74,12 @@ pass, you are breaking the invariant, not fixing the test.
    The gate is on the host, not on `NODE_ENV`, so no environment variable can open it.
 3. **No third-party script loads before consent.** `Pixels` returns `null` unless consent is
    `"granted"`. Fonts are self-hosted via `next/font` so they are unaffected.
+
+   Vercel Web Analytics (`features.analytics`) is the one exemption, and only because there is
+   nothing to gate: the script and its beacon come from `/_vercel/insights` on the site's own
+   domain, set no cookie and store no identifier. `e2e/consent.spec.ts` asserts both properties,
+   so the exemption fails loudly if either stops being true. Anything that sets a cookie or
+   leaves the domain belongs in `Pixels`.
 4. **Every store link goes through `/go/...`.** Never link straight to `apps.apple.com` or
    `play.google.com`: the route decides the destination server-side, keeps the click inside
    attribution, and gives a desktop visitor a QR page instead of a store link they cannot
@@ -117,6 +123,7 @@ These cost real debugging time. Do not rediscover them.
 | **Vitest cannot parse `.tsx` without help** | The repo sets `jsx: "preserve"` for Next. Vite 8 transforms with Oxc, so it is `oxc.jsx`, not `esbuild.jsx`. Already configured; this is why. |
 | **`preload` covers every declared font subset** | Declaring `latin-ext` for Turkish preloads a file an English page never renders. Both faces set `preload: false`; `unicode-range` still fetches only what is used, and `swap` keeps text visible. Preloading all four cost 3 mobile Performance points. |
 | **`pnpm exec` does not see a package's binaries** | `@playwright/test` lives in apps/multi, and pnpm links workspace binaries per package, not into the root `.bin`. Use `pnpm --filter multi exec playwright ...`. A bare `pnpm exec` fails on CI and, worse, can silently run a different Playwright from a parent directory locally. |
+| **`/_vercel/insights` 404s locally** | The analytics endpoint only exists on Vercel, so a local run logs a console error worth four Best Practices points. Atlas carries the analytics demo and Aurora — the Lighthouse target — does not, deliberately. |
 | **This shell drops `cat` intermittently** | Heredocs inside shell functions have silently produced empty files. For multi-file writes, use `python3` and assert the bytes landed. |
 
 ## Common tasks
