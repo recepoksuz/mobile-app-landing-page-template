@@ -62,6 +62,7 @@ export { Faq } from "./components/Faq";
 export { ClosingCta } from "./components/ClosingCta";
 export { Footer } from "./components/Footer";
 export { CtaButton } from "./components/CtaButton";
+export { AttributionLink } from "./components/AttributionLink";
 export { StoreBadges } from "./components/StoreBadges";
 export { LocaleSwitcher } from "./components/LocaleSwitcher";
 export { MobileMenu } from "./components/MobileMenu";

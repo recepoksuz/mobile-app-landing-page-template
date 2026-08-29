@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AttributionLink } from "./AttributionLink";
 import type { AppConfig } from "../config/schema";
 import { getDictionary } from "../i18n/resolve";
 import type { Locale } from "../i18n/types";
@@ -34,7 +34,7 @@ function Badge({
   children: React.ReactNode;
 }) {
   return (
-    <Link
+    <AttributionLink
       href={href}
       prefetch={false}
       className="group inline-flex h-[58px] items-center gap-2.5 rounded-xl border border-white/20 bg-white/[0.04] pl-3.5 pr-4 text-fg transition-[transform,background-color,border-color] duration-200 hover:border-white/40 hover:bg-white/[0.09] active:scale-[0.98] sm:h-[62px] sm:gap-3 sm:pl-4 sm:pr-5 xl:h-[68px] xl:gap-3.5 xl:pl-5 xl:pr-6"
@@ -48,7 +48,7 @@ function Badge({
           {main}
         </span>
       </span>
-    </Link>
+    </AttributionLink>
   );
 }
 

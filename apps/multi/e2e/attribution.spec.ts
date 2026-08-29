@@ -156,3 +156,59 @@ test.describe("promo and short links", () => {
     await context.close();
   });
 });
+
+test.describe("campaign parameters survive the landing page", () => {
+  // The common shape of a real funnel: the ad points at the page so people can read it, and
+  // they tap a badge afterwards. That is two clicks, and the campaign has to survive the gap
+  // between them — otherwise every install from a paid click is recorded as organic.
+
+  test("a badge click carries the utm params the visitor arrived with", async ({ page }) => {
+    await page.goto(`${ATLAS}/?utm_source=meta&utm_campaign=summer_sale&utm_content=reel1`);
+
+    const href = await page.getByRole("link", { name: /app store/i }).first().getAttribute("href");
+    const forwarded = new URL(href as string, ATLAS).searchParams;
+
+    expect(forwarded.get("utm_source")).toBe("meta");
+    expect(forwarded.get("utm_campaign")).toBe("summer_sale");
+    expect(forwarded.get("utm_content")).toBe("reel1");
+    // The link's own parameter still says which badge was clicked.
+    expect(forwarded.get("store")).toBe("ios");
+  });
+
+  test("and they reach the OneLink as attribution", async ({ page }) => {
+    // End to end: what the ad platform sent, arriving in the fields AppsFlyer reads.
+    await page.goto(`${ATLAS}/?utm_source=meta&utm_campaign=summer_sale`);
+    const href = await page.getByRole("link", { name: /app store/i }).first().getAttribute("href");
+
+    const response = await page.request.get(new URL(href as string, ATLAS).toString(), {
+      headers: { "user-agent": IOS },
+      maxRedirects: 0,
+    });
+
+    const target = new URL(response.headers().location);
+    expect(target.searchParams.get("pid")).toBe("meta");
+    expect(target.searchParams.get("c")).toBe("summer_sale");
+  });
+
+  test("an unrelated query parameter is not forwarded", async ({ page }) => {
+    // The destination is a third party's URL. Forwarding anything a stranger can put in a link
+    // would let them write into someone else's attribution data.
+    await page.goto(`${ATLAS}/?utm_source=meta&evil=payload`);
+
+    const href = await page.getByRole("link", { name: /app store/i }).first().getAttribute("href");
+    expect(href).not.toContain("evil");
+  });
+
+  test("the badge still works with JavaScript disabled", async ({ browser }) => {
+    // Forwarding is an enhancement. Without it the click must still reach the right store.
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto(`${ATLAS}/?utm_source=meta`);
+
+    const href = await page.getByRole("link", { name: /app store/i }).first().getAttribute("href");
+    expect(href).toContain("/go/");
+    expect(href).toContain("store=ios");
+
+    await context.close();
+  });
+});

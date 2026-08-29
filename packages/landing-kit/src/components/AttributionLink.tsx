@@ -1,0 +1,87 @@
+"use client";
+
+import Link from "next/link";
+import { Suspense, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+
+/**
+ * Parameters worth carrying from the landing page into `/go/...`.
+ *
+ * An allow-list, not "everything": the destination is an AppsFlyer OneLink, and forwarding
+ * arbitrary query strings from a URL a stranger can craft would let anyone put whatever they
+ * like into someone else's attribution data.
+ */
+const FORWARDED = /^(utm_|af_)|^(pid|c)$/;
+
+function withForwardedParams(href: string, current: URLSearchParams): string {
+  const [path, own = ""] = href.split("?");
+  const params = new URLSearchParams(own);
+
+  for (const [key, value] of current) {
+    // The link's own parameters win: `?store=ios` says which badge was clicked, and no
+    // incoming query string should be able to change that.
+    if (FORWARDED.test(key) && !params.has(key)) params.set(key, value);
+  }
+
+  const query = params.toString();
+  return query ? `${path}?${query}` : (path as string);
+}
+
+function Forwarding({
+  href,
+  className,
+  children,
+  ...rest
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+} & Record<string, unknown>) {
+  const current = useSearchParams();
+
+  return (
+    <Link href={withForwardedParams(href, current)} className={className} {...rest}>
+      {children}
+    </Link>
+  );
+}
+
+/**
+ * A link into `/go/...` that carries the campaign parameters the visitor arrived with.
+ *
+ * The gap this closes: an ad usually points at the landing page, not at `/go/...` directly, so
+ * someone arrives at `/?utm_source=meta&utm_campaign=summer`, reads, then taps a store badge.
+ * Without this the badge linked to a bare `/go/hero` and the route saw `pid=web` — the campaign
+ * that paid for the click was lost between the two clicks, and every install looked organic.
+ *
+ * Read on the client rather than from the page's `searchParams`, which would opt every landing
+ * page out of static generation for a value only the visitor's own click needs.
+ *
+ * The fallback is the plain link. Before hydration, without JavaScript, or for a crawler, the
+ * badge still points at `/go/...` and still routes to the right store — it just arrives without
+ * attribution, which is exactly what it did before this existed.
+ */
+export function AttributionLink({
+  href,
+  className,
+  children,
+  ...rest
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+} & Record<string, unknown>) {
+  return (
+    <Suspense
+      fallback={
+        <Link href={href} className={className} {...rest}>
+          {children}
+        </Link>
+      }
+    >
+      <Forwarding href={href} className={className} {...rest}>
+        {children}
+      </Forwarding>
+    </Suspense>
+  );
+}
