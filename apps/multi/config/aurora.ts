@@ -49,7 +49,13 @@ export const aurora = defineAppConfig({
   },
 
   attribution: {
-    oneLink: "https://aurora.onelink.me/abcd",
+    // No `oneLink` on purpose, so `/go/...` falls through to the store and a click on the live
+    // demo lands on a real App Store page. A placeholder OneLink answers "Application ID not
+    // found", which is correct of AppsFlyer and a poor first impression of the template.
+    // Atlas carries the OneLink demonstration instead.
+    //
+    // A real deploy sets this: it is what carries `pid`, `c` and the `af_*` fields through to
+    // the install. Without one a `/go/...` link keeps its routing but loses its attribution.
     metaPixelId: "000000000000000",
     tiktokPixelId: "CABCDE1234500",
   },

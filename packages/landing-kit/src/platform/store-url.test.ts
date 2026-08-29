@@ -209,3 +209,26 @@ describe("resolveStoreTarget", () => {
     expect(url.searchParams.get("c")).toBe("alice");
   });
 });
+
+describe("a platform the app does not ship on", () => {
+  const iosOnly = defineAppConfig({
+    ...structuredClone(validConfigInput),
+    store: { ios: { appId: "1", url: "https://apps.apple.com/app/id1" } },
+    attribution: { oneLink: "https://acme.onelink.me/abcd" },
+  });
+
+  it("is not papered over by a OneLink", () => {
+    // A OneLink cannot install what was never published: it would resolve to an empty Play
+    // listing. Availability is therefore decided before attribution, not after.
+    expect(resolveStoreTarget(iosOnly, "android", "x", new URLSearchParams(), "android")).toEqual({
+      kind: "none",
+    });
+  });
+
+  it("still attributes the platform it does ship on", () => {
+    const target = resolveStoreTarget(iosOnly, "ios", "x", new URLSearchParams(), "ios");
+
+    expect(target.kind).toBe("redirect");
+    expect(target.kind === "redirect" && target.url).toContain("onelink.me");
+  });
+});

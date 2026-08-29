@@ -33,7 +33,21 @@ export const atlas = defineAppConfig({
     },
   },
 
-  attribution: {},
+  attribution: {
+    // Atlas carries the OneLink demonstration. Aurora — the tenant a deployment serves on its
+    // own `*.vercel.app` URL — deliberately has none, so a click on the live demo reaches a
+    // real store page instead of AppsFlyer's "Application ID not found".
+    //
+    // This is the only place `/go/...` attribution can survive: `pid`, `c` and the `af_*`
+    // fields ride on the OneLink URL and a plain store link carries none of them.
+    oneLink: "https://atlas.onelink.me/abcd",
+  },
+
+  // Renaming a campaign, or keeping a creative code out of a URL people will see. The path
+  // already carries attribution without any entry here; this only overrides it.
+  campaigns: {
+    "podcast/inkfluencer": { campaign: "podcast_ep_42", ad: "midroll" },
+  },
 
   content: {
     features: [],

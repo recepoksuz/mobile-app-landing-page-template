@@ -8,9 +8,13 @@ const ANDROID =
 
 /** Spec §6.1: ad creatives point at this route rather than directly at the store. */
 test.describe("the /go attribution route", () => {
+  // Atlas ships a OneLink and Aurora does not, so between them these cover both destinations
+  // the route can choose. The difference is not cosmetic: `pid`, `c` and the `af_*` fields ride
+  // on the OneLink URL, and a plain store link carries none of them.
+
   test("redirects to OneLink with the campaign parameters on iOS", async ({ request }) => {
     const response = await request.get(
-      `${AURORA}/go/summer?utm_source=meta&utm_campaign=summer_sale&utm_medium=stories`,
+      `${ATLAS}/go/summer?utm_source=meta&utm_campaign=summer_sale&utm_medium=stories`,
       { headers: { "user-agent": IOS }, maxRedirects: 0 },
     );
 
@@ -22,30 +26,34 @@ test.describe("the /go attribution route", () => {
     expect(target.searchParams.get("af_adset")).toBe("stories");
   });
 
-  test("redirects to OneLink on Android too", async ({ request }) => {
+  test("sends an iPhone to the App Store when there is no OneLink", async ({ request }) => {
+    const response = await request.get(`${AURORA}/go/x`, {
+      headers: { "user-agent": IOS },
+      maxRedirects: 0,
+    });
+
+    expect(response.status()).toBe(307);
+    const target = new URL(response.headers().location);
+    expect(target.hostname).toBe("apps.apple.com");
+    // Routing survives without a OneLink; attribution does not. Asserted so that removing a
+    // tenant's OneLink is a visible trade rather than a silent loss.
+    expect(target.searchParams.get("pid")).toBeNull();
+  });
+
+  test("sends an Android device to Play when there is no OneLink", async ({ request }) => {
     const response = await request.get(`${AURORA}/go/x`, {
       headers: { "user-agent": ANDROID },
       maxRedirects: 0,
     });
 
     expect(response.status()).toBe(307);
-    expect(response.headers().location).toContain("onelink.me");
-  });
-
-  test("falls back to the store directly when there is no OneLink", async ({ request }) => {
-    const response = await request.get(`${ATLAS}/go/x`, {
-      headers: { "user-agent": IOS },
-      maxRedirects: 0,
-    });
-
-    expect(response.status()).toBe(307);
-    expect(response.headers().location).toContain("apps.apple.com");
+    expect(new URL(response.headers().location).hostname).toBe("play.google.com");
   });
 
   test("desktop redirects to the store as well", async ({ request }) => {
     // A shared link should just work everywhere. The store's web page still lets a desktop
     // visitor read the listing and continue on their phone.
-    const response = await request.get(`${AURORA}/go/desktop_test`, { maxRedirects: 0 });
+    const response = await request.get(`${ATLAS}/go/desktop_test`, { maxRedirects: 0 });
 
     expect(response.status()).toBe(307);
     expect(response.headers().location).toContain("onelink.me");
@@ -59,6 +67,7 @@ test.describe("the /go attribution route", () => {
 
 test.describe("promo and short links", () => {
   test("a config redirect turns a short path into an attribution link", async ({ request }) => {
+    // Aurora is the tenant with `redirects`; this asserts the rewrite, not the destination.
     const response = await request.get(`${AURORA}/download`, {
       headers: { "user-agent": IOS },
       maxRedirects: 0,
@@ -73,7 +82,7 @@ test.describe("promo and short links", () => {
   }) => {
     // No query string and no registry entry: a new creator is a URL someone types. This is also
     // what survives a link shortener, an Instagram bio field, or being retyped off a slide.
-    const response = await request.get(`${AURORA}/go/influencer/alice/reel1`, {
+    const response = await request.get(`${ATLAS}/go/influencer/alice/reel1`, {
       headers: { "user-agent": IOS },
       maxRedirects: 0,
     });
@@ -85,7 +94,7 @@ test.describe("promo and short links", () => {
   });
 
   test("a brand new source needs nothing added anywhere", async ({ request }) => {
-    const response = await request.get(`${AURORA}/go/podcast/joerogan`, {
+    const response = await request.get(`${ATLAS}/go/podcast/joerogan`, {
       headers: { "user-agent": IOS },
       maxRedirects: 0,
     });
@@ -97,7 +106,7 @@ test.describe("promo and short links", () => {
 
   test("a registered entry overrides what the path says", async ({ request }) => {
     // Registering is now only for renaming a campaign or hiding a creative code from the URL.
-    const response = await request.get(`${AURORA}/go/podcast/inkfluencer`, {
+    const response = await request.get(`${ATLAS}/go/podcast/inkfluencer`, {
       headers: { "user-agent": IOS },
       maxRedirects: 0,
     });
@@ -109,7 +118,7 @@ test.describe("promo and short links", () => {
   });
 
   test("an unregistered link still works with no config entry", async ({ request }) => {
-    const response = await request.get(`${AURORA}/go/some_one_off_link`, {
+    const response = await request.get(`${ATLAS}/go/some_one_off_link`, {
       headers: { "user-agent": IOS },
       maxRedirects: 0,
     });
@@ -120,7 +129,7 @@ test.describe("promo and short links", () => {
   });
 
   test("the media source can be split per link", async ({ request }) => {
-    const response = await request.get(`${AURORA}/go/alice?utm_source=influencer&utm_content=reel1`, {
+    const response = await request.get(`${ATLAS}/go/alice?utm_source=influencer&utm_content=reel1`, {
       headers: { "user-agent": IOS },
       maxRedirects: 0,
     });

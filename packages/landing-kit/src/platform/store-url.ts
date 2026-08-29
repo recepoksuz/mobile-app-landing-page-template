@@ -121,6 +121,20 @@ export function resolveStoreTarget(
     return config.features.desktopQr ? { kind: "qr", url } : { kind: "redirect", url };
   }
 
+  // Whether the app ships on this platform is decided before the OneLink, not after. A OneLink
+  // cannot install what is not published: handed an iOS-only app and an Android visitor it
+  // resolves to an empty Play listing, which is a worse dead end than saying so plainly. The
+  // check is on the store entry rather than its URL, so a tenant that has a listing but no
+  // explicit `url` still goes through attribution.
+  const shipsHere =
+    storeFor === "ios"
+      ? config.store.ios
+      : storeFor === "android"
+        ? config.store.android
+        : (config.store.ios ?? config.store.android);
+
+  if (!shipsHere) return { kind: "none" };
+
   if (oneLink) {
     const params = appsflyerParams(path, incoming, registered);
     params.af_force_deeplink = "true";
